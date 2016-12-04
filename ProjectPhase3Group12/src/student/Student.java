@@ -20,9 +20,53 @@ public class Student {
 	private AcademicRecord myAcademicRecord;
 	private List<Employer> myEmployers;
 	
-	public Student(String theFirstName, String theLastName){
+	/**
+	 * This Constructor should be used in most cases.
+	 * @param theName for te students name.
+	 * @param theRecord for any existing academic record.
+	 * @param theEmployers for any employers the student already has.
+	 */
+	public Student(String theFirstName, String theLastName, AcademicRecord theRecord, List<Employer> theEmployers) {
+		
 		this.setFirstName(theFirstName);
 		this.setLastName(theLastName);
+		addAcademicRecord(theRecord);
+		
+		for(Employer e : theEmployers) {
+			addEmployer(e);
+		}
+	}
+	
+	/**
+	 * WARNING- This constructor is ONLY for use when a student is to be added, but no information is available.
+	 * @param theName is the student's name.
+	 */
+	public Student(String theFirstName, String theLastName) {
+		
+		this.setFirstName(theFirstName);
+		this.setLastName(theLastName);
+		
+		/**
+		 * This allows a record to be created, and editable for future use.
+		 */
+		addAcademicRecord(new AcademicRecord("none", "undecided", "undecided", "none",
+					"none" , "none", "none", 0));
+	}
+	
+	protected boolean addAcademicRecord(AcademicRecord theRecord) {
+		
+		boolean flag = false;
+		
+		try {
+			myAcademicRecord = new AcademicRecord(theRecord.getStudentID(), theRecord.getProgram(), theRecord.getDegreeLevel(),
+					theRecord.getGraduationTerm(), theRecord.getGraduationYear(), theRecord.getUWEmail(), theRecord.getExternalEmail(), theRecord.getGPA());
+				flag = true;
+			} catch(Exception e) {
+				
+				flag = false;
+			}
+			
+			return flag;
 	}
 	
 	public String getFirstName() {
