@@ -5,6 +5,7 @@ package student;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import academic.AcademicRecord;
 import employment.Employer;
@@ -13,7 +14,7 @@ import employment.Employer;
  * @author Andrew,Brandon,Brian
  *
  */
-public class Student {
+public class Student extends Observable {
 
 	private String myID;
 	private String myFirstName;
@@ -23,7 +24,7 @@ public class Student {
 	
 	/**
 	 * This Constructor should be used in most cases.
-	 * @param theName for te students name.
+	 * @param theName for the students name.
 	 * @param theRecord for any existing academic record.
 	 * @param theEmployers for any employers the student already has.
 	 */

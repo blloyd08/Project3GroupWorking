@@ -6,12 +6,13 @@ package academic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 /**
  * @author Andrew,Brandon,Brian
  *
  */
-public class AcademicRecord {
+public class AcademicRecord extends Observable {
 	
 	private String myID;
 	private String myStudentID;

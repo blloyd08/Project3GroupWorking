@@ -148,7 +148,7 @@ public class EmployerDB {
 			Employer employer = new Employer (employerName, startDate, position);
 			employer.setID(Integer.toString(id));
 			ArrayList<String> skills = getSkills(employer.getID());
-			employer.setSkills(skills);
+			employer.addSkill(skills);
 			employers.add(employer);
 		}
 	}
