@@ -4,12 +4,13 @@
 package employment;
 
 import java.util.ArrayList;
+import java.util.Observable;
 
 /**
  * @author Andrew,Brandon,Brian
  *
  */
-public class Employer {
+public class Employer extends Observable {
 	private String myID;
 	private String myCompanyName;
 	private String myStartDate;
@@ -26,8 +27,7 @@ public class Employer {
 	 * @param thePosition for the title of their position.
 	 * @param theSkill for a skill the student has.
 	 */
-	public Employer(String theCompanyName, String theStartDate, double theSalary,
-				String thePosition, String theSkill) {
+	public Employer(String theCompanyName, String theStartDate, double theSalary, String thePosition, String theSkill) {
 		this.setCompanyName(theCompanyName);
 		this.setStartDate(theStartDate);
 		this.setSalary(theSalary);
@@ -46,8 +46,7 @@ public class Employer {
 	 * @param theSalary
 	 * @param thePosition
 	 */
-	public Employer(String theCompanyName, String theStartDate, double theSalary,
-			String thePosition) {
+	public Employer(String theCompanyName, String theStartDate, double theSalary, String thePosition) {
 		
 		this.setCompanyName(theCompanyName);
 		this.setStartDate(theStartDate);

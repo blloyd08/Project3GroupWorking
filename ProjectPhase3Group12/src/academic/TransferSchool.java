@@ -3,11 +3,13 @@
  */
 package academic;
 
+import java.util.Observable;
+
 /**
  * @author Andrew,Brandon,Brian
  *
  */
-public class TransferSchool {
+public class TransferSchool extends Observable {
 	
 	private String myID;
 	private String myAcademicID;
