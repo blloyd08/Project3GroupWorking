@@ -6,6 +6,7 @@ package test;
 import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -14,6 +15,8 @@ import org.junit.Test;
 import academic.AcademicCollection;
 import academic.AcademicRecord;
 import academic.TransferSchool;
+import student.Student;
+import student.StudentCollection;
 
 /**
  * @author Andrew,Brandon,Brian
@@ -22,20 +25,32 @@ import academic.TransferSchool;
 public class AcademicCollectionTest {
 
 	private AcademicRecord mRecord;
+	private Student mStudent;
 	
+	
+	private Student createStudent(){
+		String firstName = "autoTestFirst";
+		String lastName = "autoTestLast";
+		StudentCollection.add(new Student(firstName, lastName));
+		
+		//Get the newly created student object that has an ID
+		List<Student> students = StudentCollection.searchByName(firstName, lastName);
+		return students.get(students.size() -1);
+	}
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		mRecord = new AcademicRecord("1","autoTestProgram","autoTestDegree","autoTestTerm",
+		StudentCollection.add(new Student("autoTestFirst", "autoTestLast"));
+		mStudent = createStudent();
+		mRecord = new AcademicRecord(mStudent.getID(),"autoTestProgram","autoTestDegree","autoTestTerm",
 				"1999","autoTest@uw.edu", "autotest@autotext.com", 2.01);
 	}
 
 	/**
 	 * Test method for {@link academic.AcademicCollection#add(academic.AcademicRecord)}.
 	 */
-	@Ignore
 	@Test
 	public void testAddAcademicRecord() {
 		assertTrue(AcademicCollection.add(mRecord));
@@ -47,7 +62,8 @@ public class AcademicCollectionTest {
 	@Test
 	public void testAddTransferSchool() {
 		TransferSchool school = new TransferSchool("autoTest", 1.0, "NA");
-		school.setAcademicID("1");
+		
+		school.setAcademicID();
 		assertTrue(AcademicCollection.add(school));
 	}
 
@@ -125,5 +141,40 @@ public class AcademicCollectionTest {
 		System.out.println(school.getID() + " " + school.getAcademicID() + " " + school.getName() + " " + school.getGPA());
 		assertNotNull(school);
 	}
+	
+	/**
+	 * Gets a unique name for a category to allow successfully update or addtion of a category
+	 * @param startString string before the appened random number.
+	 * @return original string plus a random number that makes the string unique
+	 */
+	private String appendUniqueUWEmail(String startString) {
+		// Get unique name
+		Random rand = new Random();
+		int uniqueKey = rand.nextInt();
+		String uwEmail = startString + Integer.toString(uniqueKey);
+		List<AcademicRecord> records = AcademicCollection.getAcademicRecord();
+		while ((StudentCollection.searchByEmail(uwEmail)).si == true) {
+			uniqueKey = rand.nextInt();
+			categoryName = startString + Integer.toString(uniqueKey);
+			categories = ItemCollection.getCategories();
+		}
+		
+		return categoryName;
+	}
+//
+//	/**
+//	 * Check if a category name has already been used in a collection of ItemCategory objects
+//	 * @param categories current list of ItemCategory objects
+//	 * @param categoryName name of category to find
+//	 * @return true if the categoryName already exists in the list.
+//	 */
+//	private boolean findCategory(List<ItemCategory> categories, String categoryName) {
+//		for (ItemCategory cat : categories) {
+//			if (cat.getCategory().equals(categoryName)) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 
 }
