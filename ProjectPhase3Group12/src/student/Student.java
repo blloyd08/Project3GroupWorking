@@ -54,8 +54,7 @@ public class Student extends Observable {
 		 * This allows a record to be created, and editable for future use.
 		 */
 		myEmployers = new ArrayList<Employer>();
-		addAcademicRecord(new AcademicRecord("none", "undecided", "undecided", "none",
-					"none" , "none", "none", 0));
+		myAcademicRecord = null;
 	}
 	
 	public boolean addAcademicRecord(AcademicRecord theRecord) {
@@ -116,19 +115,33 @@ public class Student extends Observable {
 		this.myAcademicRecord = theAcademicRecord;
 	}
 	
-	public List<Employer> getEmployers() {
+	public ArrayList<Employer> getEmployers() {
 		return myEmployers;
 	}
 	
-	public void setEmployers(ArrayList<Employer> theEmployers) {
-		//TODO setter resets the List or just adds to it?
-		for(Employer e : theEmployers) {
-			myEmployers.add(e);
+	public Employer getEmployer(String theEmployerID) {
+
+		int ndx = -1;
+		for(Employer e : myEmployers) {
+			if(e.getID() == theEmployerID) {
+				ndx = myEmployers.indexOf(e);
+			}
+		}
+		
+		if(ndx == -1) {
+			return null;
+		} else {
+			
+			return myEmployers.get(ndx);
 		}
 	}
 	
+	public void setEmployers(ArrayList<Employer> theEmployers) {
+		myEmployers = theEmployers;
+	}
+	
 	public void setEmployers(Employer theEmployer) {
-		//TODO setter resets the List or just adds to it?
+		myEmployers = new ArrayList<Employer>();
 		myEmployers.add(theEmployer);
 	}
 
