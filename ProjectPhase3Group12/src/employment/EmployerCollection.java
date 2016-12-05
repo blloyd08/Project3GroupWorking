@@ -38,7 +38,7 @@ public class EmployerCollection {
 
 		// Add employer skills
 		List<String> skills = employer.getSkills();
-		if (skills != null || skills.size() > 0) {
+		if (skills != null && skills.size() > 0) {
 			for (String skill : skills) {
 				if (!EmployerCollection.add(employer.getID(), skill)) {
 					return false;

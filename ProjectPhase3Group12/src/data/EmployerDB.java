@@ -111,18 +111,7 @@ public class EmployerDB {
 			stmt.setInt(1, Integer.parseInt(studentID));
 			ResultSet rs = stmt.executeQuery();
 			employers = buildEmployerObjects(rs);
-//			while (rs.next()) {
-//				int id = rs.getInt("employerID");
-//				int resultStudentID = rs.getInt("studentID");
-//				String stringStudentID = Integer.toString(resultStudentID);
-//				Date startDate = rs.getDate("startDate");
-//				String position = rs.getString("position");
-//				employer = new Employer (startDate, position);
-//				employer.setID(Integer.toString(id));
-//				List<Skill> skills = getSkills(employer.getID());
-//				employer.setSkills(skills);
-//				employers.add(employer);
-//			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println(e);
@@ -136,7 +125,7 @@ public class EmployerDB {
 		return employers;
 	}
 	
-	private ArrayList<Employer> buildEmployerObjects (ResultSet rs){
+	private ArrayList<Employer> buildEmployerObjects (ResultSet rs) throws SQLException{
 		ArrayList<Employer> employers = new ArrayList<Employer>();
 		while (rs.next()) {
 			int id = rs.getInt("employerID");
@@ -145,12 +134,13 @@ public class EmployerDB {
 			SimpleDateFormat df = new SimpleDateFormat("MM.dd.yyyy");
 			String startDate = df.format(rs.getDate("startDate"));
 			String position = rs.getString("position");
-			Employer employer = new Employer (employerName, startDate, position);
+			Employer employer = new Employer (employerName, startDate);
 			employer.setID(Integer.toString(id));
 			ArrayList<String> skills = getSkills(employer.getID());
 			employer.addSkill(skills);
 			employers.add(employer);
 		}
+		return employers;
 	}
 	
 	/**
