@@ -127,7 +127,7 @@ public class AcademicDB {
 				record = new AcademicRecord(stringStudentID, program, degreeLevel,
 						graduationTerm, graduationYear, uwEmail, externalEmail, GPA);
 				record.setID(Integer.toString(id));
-				List<TransferSchool> transferSchools = getTransferSchools(record.getID());
+				ArrayList<TransferSchool> transferSchools = getTransferSchools(record.getID());
 				record.setTransferSchools(transferSchools);
 				return record;
 			}
@@ -175,7 +175,7 @@ public class AcademicDB {
 				AcademicRecord record = new AcademicRecord(stringStudentID, program, degreeLevel,
 						graduationTerm, graduationYear, uwEmail, externalEmail, GPA);
 				record.setID(Integer.toString(academicID));
-				List<TransferSchool> transferSchools = getTransferSchools(record.getID());
+				ArrayList<TransferSchool> transferSchools = getTransferSchools(record.getID());
 				record.setTransferSchools(transferSchools);
 				
 				records.add(record);
@@ -273,14 +273,14 @@ public class AcademicDB {
 	 * @return Returns a list of transfer schools that correspond to the given academic record id
 	 * @throws SQLException
 	 */
-	public List<TransferSchool> getTransferSchools(String recordID) throws SQLException {
+	public ArrayList<TransferSchool> getTransferSchools(String recordID) throws SQLException {
 		if (mConnection == null) {
 			mConnection = DataConnection.getConnection();
 		}
 		PreparedStatement preparedStmt = null;
 		int academicID = Integer.parseInt(recordID);
 		String query = "SELECT * FROM TransferSchool WHERE academicID = ?";
-		List<TransferSchool> schools = new ArrayList<TransferSchool>();
+		ArrayList<TransferSchool> schools = new ArrayList<TransferSchool>();
 		try {
 			preparedStmt = mConnection.prepareStatement(query);
 			preparedStmt.setInt(1, academicID);

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +38,7 @@ public class EmployerDB {
 	public String updateEmployer(Employer employer, String columnName, Object data) {
 
 		String sql = "UPDATE Employer SET `" + columnName + "` = ?  WHERE employerID = ?";
-		// For debugging - System.out.println(sql);
+		// For debugging - System.out.println(SQL);
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = mConnection.prepareStatement(sql);
@@ -47,7 +48,7 @@ public class EmployerDB {
 				//Handle GPA
 				preparedStatement.setDate(1, (java.sql.Date) data);
 			}
-			preparedStatement.setInt(2, Integer.parseInt(employer.getID())); // for academicID
+			preparedStatement.setInt(2, Integer.parseInt(employer.getID()));
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e);
@@ -64,7 +65,7 @@ public class EmployerDB {
 	 * @return Returns "Added Employer Successfully" or "Error adding employer: " with
 	 *         the sql exception.
 	 */
-	public String addEmployer(Employer employer) {
+	public String addEmployer(Employer employer, String studentID) {
 		String sql = "INSERT INTO Employer(studentID, startDate, position) "
 				+ "VALUES (?, ?, ?);";
 
@@ -79,8 +80,8 @@ public class EmployerDB {
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = mConnection.prepareStatement(sql);
-			preparedStatement.setInt(1, Integer.parseInt(employer.getStudentID()));
-			preparedStatement.setDate(2, employer.getStartDate());
+			preparedStatement.setInt(1, Integer.parseInt(studentID));
+			preparedStatement.setDate(2, java.sql.Date.valueOf(employer.getStartDate()));
 			preparedStatement.setString(3, employer.getPosition());
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
@@ -116,7 +117,7 @@ public class EmployerDB {
 				String stringStudentID = Integer.toString(resultStudentID);
 				Date startDate = rs.getDate("startDate");
 				String position = rs.getString("position");
-				employer = new Employer (stringStudentID, startDate, position);
+				employer = new Employer (startDate, position);
 				employer.setID(Integer.toString(id));
 				List<Skill> skills = getSkills(employer.getID());
 				employer.setSkills(skills);
@@ -133,6 +134,23 @@ public class EmployerDB {
 		
 		//Returned null if no records found
 		return employers;
+	}
+	
+	private ArrayList<Employer> buildEmployerObjects (ResultSet rs){
+		ArrayList<Employer> employers = new ArrayList<Employer>();
+		while (rs.next()) {
+			int id = rs.getInt("employerID");
+			String employerName = rs.getString("name");
+			double salary = rs.getDouble("salary");
+			SimpleDateFormat df = new SimpleDateFormat("MM.dd.yyyy");
+			String startDate = df.format(rs.getDate("startDate"));
+			String position = rs.getString("position");
+			Employer employer = new Employer (employerName, startDate, position);
+			employer.setID(Integer.toString(id));
+			ArrayList<Skill> skills = getSkills(employer.getID());
+			employer.setSkills(skills);
+			employers.add(employer);
+		}
 	}
 	
 	/**
@@ -246,43 +264,43 @@ public class EmployerDB {
 		return "Updated Skill Successfully";
 	}
 	
-	/**
-	 * Gets the skill that matches the unique skill ID.
-	 * 
-	 * @param skillID Unique id of the Skill.
-	 * @return Returns a skill that correspond to the given skill id
-	 * @throws SQLException
-	 */
-	public Skill getSkill(String skillID) throws SQLException {
-		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
-		}
-		PreparedStatement preparedStmt = null;
-		int intskillID = Integer.parseInt(skillID);
-		String query = "SELECT * FROM Skill WHERE skillID = ?";
-		Skill skill = null;
-		try {
-			preparedStmt = mConnection.prepareStatement(query);
-			preparedStmt.setInt(1, intskillID);
-			ResultSet rs = preparedStmt.executeQuery();
-			if (rs.next()) {
-				int returnSkillID = rs.getInt("skillID");
-				int employerID = rs.getInt("employerID");
-				String name = rs.getString("name");
-				skill = new Skill(Integer.toString(employerID), name);
-				skill.setID = Integer.toString(returnSkillID);
-				return skill;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println(e);
-		} finally {
-			if (preparedStmt != null) {
-				preparedStmt.close();
-			}
-		}
-		return skill;
-	}
+//	/**
+//	 * Gets the skill that matches the unique skill ID.
+//	 * 
+//	 * @param skillID Unique id of the Skill.
+//	 * @return Returns a skill that correspond to the given skill id
+//	 * @throws SQLException
+//	 */
+//	public Skill getSkill(String skillID) throws SQLException {
+//		if (mConnection == null) {
+//			mConnection = DataConnection.getConnection();
+//		}
+//		PreparedStatement preparedStmt = null;
+//		int intskillID = Integer.parseInt(skillID);
+//		String query = "SELECT * FROM Skill WHERE skillID = ?";
+//		Skill skill = null;
+//		try {
+//			preparedStmt = mConnection.prepareStatement(query);
+//			preparedStmt.setInt(1, intskillID);
+//			ResultSet rs = preparedStmt.executeQuery();
+//			if (rs.next()) {
+//				int returnSkillID = rs.getInt("skillID");
+//				int employerID = rs.getInt("employerID");
+//				String name = rs.getString("name");
+//				skill = new Skill(Integer.toString(employerID), name);
+//				skill.setID = Integer.toString(returnSkillID);
+//				return skill;
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			System.out.println(e);
+//		} finally {
+//			if (preparedStmt != null) {
+//				preparedStmt.close();
+//			}
+//		}
+//		return skill;
+//	}
 	
 	/**
 	 * Gets  the skills for the employer with the given employer id from
@@ -402,7 +420,7 @@ public class EmployerDB {
 	 *         the sql exception.
 	 */
 	public String deleteSkill(Skill skill) {
-		String sql = "DELETE FROM Skill WHERE skillID = ?");
+		String sql = "DELETE FROM Skill WHERE skillID = ?";
 
 		if (mConnection == null) {
 			try {
