@@ -3,6 +3,7 @@ package employment;
 import data.*;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,24 +21,26 @@ public class EmployerCollection {
 	 * 
 	 * @param employer
 	 *            Employer of a student.
+	 * @param studentID
+	 * 			Unique ID of student that worked for this employer
 	 * @return true or false
 	 */
-	public static boolean add(Employer employer) {
+	public static boolean add(Employer employer, String studentID) {
 		if (mEmployerDB == null) {
 			mEmployerDB = new EmployerDB();
 		}
 
-		String message = mEmployerDB.addEmployer(employer);
+		String message = mEmployerDB.addEmployer(employer, studentID);
 
 		if (message.startsWith("Error adding employer:")) {
 			return false;
 		}
 
 		// Add employer skills
-		List<Skill> skills = employer.getSkills();
+		List<String> skills = employer.getSkills();
 		if (skills != null || skills.size() > 0) {
-			for (Skill skill : skills) {
-				if (!EmployerCollection.add(skill)) {
+			for (String skill : skills) {
+				if (!EmployerCollection.add(employer.getID(), skill)) {
 					return false;
 				}
 			}
@@ -48,16 +51,18 @@ public class EmployerCollection {
 	/**
 	 * Adds a new skill to the data.
 	 * 
+	 * @param employerID
+	 * 			Unique id of the employer who is adding the skill
 	 * @param Skill
-	 *            Skill that is related to an employer
+	 *            Skill name that is related to an employer
 	 * @return true or false
 	 */
-	public static boolean add(Skill skill) {
+	public static boolean add(String employerID, String skill) {
 		if (mEmployerDB == null) {
 			mEmployerDB = new EmployerDB();
 		}
 
-		String message = mEmployerDB.addSkill(skill);
+		String message = mEmployerDB.addSkill(employerID, skill);
 		if (message.startsWith("Error adding skill:")) {
 			return false;
 		}
@@ -89,17 +94,19 @@ public class EmployerCollection {
 	/**
 	 * Modify the name of a skill.
 	 * 
-	 * @param Skill
-	 *            Skill to modify
-	 * @param name
-	 *            The new name for the skill
+	 * @param employerID
+	 * 			Unique id of the employer where the skill is used
+	 * @param oldName
+	 * 			The name of the skill before the update
+	 * @param newName
+	 * 			The name that will replace the current name of the skill 
 	 * @return true or false
 	 */
-	public static boolean update(Skill skill, String newName) {
+	public static boolean update(String employerID,String oldName, String newName) {
 		if (mEmployerDB == null) {
 			mEmployerDB = new EmployerDB();
 		}
-		String message = mEmployerDB.updateSkill(skill, newName);
+		String message = mEmployerDB.updateSkill(employerID, oldName, newName);
 		if (message.startsWith("Error updating skill: ")) {
 			return false;
 		}
@@ -124,10 +131,10 @@ public class EmployerCollection {
 		}
 		
 		//Handle deleting related skills
-		List<Skill> skills = employer.getSkills();
+		List<String> skills = employer.getSkills();
 		if (skills != null && skills.size() > 0){
-			for (Skill skill : skills){
-				if (!EmployerCollection.delete(skill)){
+			for (String skill : skills){
+				if (!EmployerCollection.delete(employer.getID(), skill)){
 					return false;
 				}
 			}
@@ -143,21 +150,23 @@ public class EmployerCollection {
 	/**
 	 * Deletes the particular skill from the database
 	 * 
+	 * @param employerID
+	 * 			Unique ID of the employer
 	 * @param skill
-	 *            Skill to be deleted
+	 *            Skill name to be deleted
 	 * @return true or false
 	 */
-	public static boolean delete(Skill skill) {
+	public static boolean delete(String employerID, String skill) {
 		if (mEmployerDB == null) {
 			mEmployerDB = new EmployerDB();
 		}
 
 		// Handle no employer or no ID
-		if (skill == null || skill.getID() == null) {
+		if (employerID == null || skill == null) {
 			return false;
 		}
 		
-		String message = mEmployerDB.deleteSkill(skill);
+		String message = mEmployerDB.deleteSkill(employerID, skill);
 		if (message.startsWith("Error deleting skill: ")) {
 			return false;
 		}
@@ -171,7 +180,7 @@ public class EmployerCollection {
 	 *            Id of the student that the employer is related to.
 	 * @return List of employers that the student worked for
 	 */
-	public static List<Employer> getEmployers(String studentID) {
+	public static ArrayList<Employer> getEmployers(String studentID) {
 		if (mEmployerDB == null) {
 			mEmployerDB = new EmployerDB();
 		}
@@ -208,7 +217,7 @@ public class EmployerCollection {
 	 * 
 	 * @return List of employers
 	 */
-	public static List<Employer> getEmployers() {
+	public static ArrayList<Employer> getEmployers() {
 		if (mEmployerDB == null) {
 			mEmployerDB = new EmployerDB();
 		}
@@ -228,7 +237,7 @@ public class EmployerCollection {
 	 *            Id of the employer that the skill is related to.
 	 * @return list of skills used while working for an employer
 	 */
-	public static List<Skill> getSkills(String employerID) {
+	public static ArrayList<String> getSkills(String employerID) {
 		if (mEmployerDB == null) {
 			mEmployerDB = new EmployerDB();
 		}
@@ -246,7 +255,7 @@ public class EmployerCollection {
 	 * 
 	 * @return list of all skills
 	 */
-	public static List<Skill> getSkills() {
+	public static ArrayList<String> getSkills() {
 		if (mEmployerDB == null) {
 			mEmployerDB = new EmployerDB();
 		}
@@ -258,23 +267,23 @@ public class EmployerCollection {
 		return null;
 	}
 
-	/**
-	 * 
-	 * Return's a skill that matches the unique skill id.
-	 * 
-	 * @param skillID
-	 *            Id of the skill
-	 * @return Skill that matches the skill id
-	 */
-	public static Skill getSkill(String skillID) {
-		if (mEmployerDB == null) {
-			mEmployerDB = new EmployerDB();
-		}
-		try {
-			return mEmployerDB.getSkill(skillID);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+//	/**
+//	 * 
+//	 * Return's a skill that matches the unique skill id.
+//	 * 
+//	 * @param skillID
+//	 *            Id of the skill
+//	 * @return Skill that matches the skill id
+//	 */
+//	public static String getSkill(String skillID) {
+//		if (mEmployerDB == null) {
+//			mEmployerDB = new EmployerDB();
+//		}
+//		try {
+//			return mEmployerDB.getSkill(skillID);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
 }
