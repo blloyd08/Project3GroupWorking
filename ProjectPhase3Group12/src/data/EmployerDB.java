@@ -44,9 +44,9 @@ public class EmployerDB {
 			preparedStatement = mConnection.prepareStatement(sql);
 			if (data instanceof String){
 				preparedStatement.setString(1, (String)data);
-			} else if (data instanceof Date){
-				//Handle GPA
-				preparedStatement.setDate(1, (java.sql.Date) data);
+			} else if (data instanceof Double){
+				//Handle Salary
+				preparedStatement.setDouble(1, (double)data);
 			}
 			preparedStatement.setInt(2, Integer.parseInt(employer.getID()));
 			preparedStatement.executeUpdate();
@@ -106,23 +106,23 @@ public class EmployerDB {
 		List<Employer> employers = new ArrayList<Employer>();
 		PreparedStatement stmt = null;
 		String query = "SELECT * from Employer where studentID = ?";
-		Employer employer = null;
 		try {
 			stmt = mConnection.prepareStatement(query);
 			stmt.setInt(1, Integer.parseInt(studentID));
 			ResultSet rs = stmt.executeQuery();
-			while (rs.next()) {
-				int id = rs.getInt("employerID");
-				int resultStudentID = rs.getInt("studentID");
-				String stringStudentID = Integer.toString(resultStudentID);
-				Date startDate = rs.getDate("startDate");
-				String position = rs.getString("position");
-				employer = new Employer (startDate, position);
-				employer.setID(Integer.toString(id));
-				List<Skill> skills = getSkills(employer.getID());
-				employer.setSkills(skills);
-				employers.add(employer);
-			}
+			employers = buildEmployerObjects(rs);
+//			while (rs.next()) {
+//				int id = rs.getInt("employerID");
+//				int resultStudentID = rs.getInt("studentID");
+//				String stringStudentID = Integer.toString(resultStudentID);
+//				Date startDate = rs.getDate("startDate");
+//				String position = rs.getString("position");
+//				employer = new Employer (startDate, position);
+//				employer.setID(Integer.toString(id));
+//				List<Skill> skills = getSkills(employer.getID());
+//				employer.setSkills(skills);
+//				employers.add(employer);
+//			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println(e);
@@ -147,7 +147,7 @@ public class EmployerDB {
 			String position = rs.getString("position");
 			Employer employer = new Employer (employerName, startDate, position);
 			employer.setID(Integer.toString(id));
-			ArrayList<Skill> skills = getSkills(employer.getID());
+			ArrayList<String> skills = getSkills(employer.getID());
 			employer.setSkills(skills);
 			employers.add(employer);
 		}
@@ -171,18 +171,22 @@ public class EmployerDB {
 			stmt = mConnection.prepareStatement(query);
 			stmt.setInt(1, Integer.parseInt(employerID));
 			ResultSet rs = stmt.executeQuery();
-			if (rs.next()) {
-				int id = rs.getInt("employerID");
-				int resultStudentID = rs.getInt("studentID");
-				String stringStudentID = Integer.toString(resultStudentID);
-				Date startDate = rs.getDate("startDate");
-				String position = rs.getString("position");
-				employer = new Employer (stringStudentID, startDate, position);
-				employer.setID(Integer.toString(id));
-				List<Skill> skills = getSkills(employer.getID());
-				employer.setSkills(skills);
-				return employer;
+			ArrayList<Employer> employers = buildEmployerObjects(rs);
+			if (employers.size() > 0){
+				employer = employers.get(0);
 			}
+//			if (rs.next()) {
+//				int id = rs.getInt("employerID");
+//				int resultStudentID = rs.getInt("studentID");
+//				String stringStudentID = Integer.toString(resultStudentID);
+//				Date startDate = rs.getDate("startDate");
+//				String position = rs.getString("position");
+//				employer = new Employer (stringStudentID, startDate, position);
+//				employer.setID(Integer.toString(id));
+//				List<Skill> skills = getSkills(employer.getID());
+//				employer.setSkills(skills);
+//				return employer;
+//			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println(e);
@@ -212,18 +216,19 @@ public class EmployerDB {
 		try {
 			stmt = mConnection.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
-			while (rs.next()) {
-				int id = rs.getInt("employerID");
-				int resultStudentID = rs.getInt("studentID");
-				String stringStudentID = Integer.toString(resultStudentID);
-				Date startDate = rs.getDate("startDate");
-				String position = rs.getString("position");
-				Employer employer = new Employer (stringStudentID, startDate, position);
-				employer.setID(Integer.toString(id));
-				List<Skill> skills = getSkills(employer.getID());
-				employer.setSkills(skills);
-				employers.add(employer);
-			}
+			employers = buildEmployerObjects(rs);
+//			while (rs.next()) {
+//				int id = rs.getInt("employerID");
+//				int resultStudentID = rs.getInt("studentID");
+//				String stringStudentID = Integer.toString(resultStudentID);
+//				Date startDate = rs.getDate("startDate");
+//				String position = rs.getString("position");
+//				Employer employer = new Employer (stringStudentID, startDate, position);
+//				employer.setID(Integer.toString(id));
+//				List<Skill> skills = getSkills(employer.getID());
+//				employer.setSkills(skills);
+//				employers.add(employer);
+//			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println(e);
@@ -241,20 +246,24 @@ public class EmployerDB {
 	/**
 	 * Modifies the data on a Skill
 	 * 
-	 * @param skill Skill used while employed by an employer
-	 * @param columnName
-	 * @param data
+	 * @param employerID
+	 * 			Unique id of the employer where the skill is used
+	 * @param oldName
+	 * 			The name of the skill before the update
+	 * @param newName
+	 * 			The name that will replace the current name of the skill 
 	 * @return Returns a message with success or failure.
 	 */
-	public String updateSkill(Skill skill, String name) {
+	public String updateSkill(String employerID, String oldName, String newName) {
 
-		String sql = "UPDATE Skill SET `name` = ?  WHERE skillID = ?";
+		String sql = "UPDATE Skill SET `name` = ?  WHERE employerID = ? AND `name` = ?";
 		// For debugging - System.out.println(sql);
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = mConnection.prepareStatement(sql);
-			preparedStatement.setString(1, name);
-			preparedStatement.setInt(2, Integer.parseInt(skill.getID())); // for skillID
+			preparedStatement.setString(1, newName);
+			preparedStatement.setInt(2, Integer.parseInt(employerID));
+			preparedStatement.setString(3, oldName);
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e);
@@ -310,25 +319,21 @@ public class EmployerDB {
 	 * @return Returns a list of skills that correspond to the given employer id
 	 * @throws SQLException
 	 */
-	public List<Skill> getSkills(String employerID) throws SQLException {
+	public ArrayList<String> getSkills(String employerID) throws SQLException {
 		if (mConnection == null) {
 			mConnection = DataConnection.getConnection();
 		}
 		PreparedStatement preparedStmt = null;
 		int intEmployerID = Integer.parseInt(employerID);
 		String query = "SELECT * FROM Skill WHERE employerID = ?";
-		List<Skill> skills = new ArrayList<Skill>();
+		ArrayList<String> skills = new ArrayList<String>();
 		try {
 			preparedStmt = mConnection.prepareStatement(query);
 			preparedStmt.setInt(1, intEmployerID);
 			ResultSet rs = preparedStmt.executeQuery();
 			while (rs.next()) {
-				int skillID = rs.getInt("skillID");
-				intEmployerID = rs.getInt("employerID");
 				String name = rs.getString("name");
-				Skill skill = new Skill(Integer.toString(intEmployerID), name);
-				skill.setID(Integer.toString(skillID));
-				skills.add(skill);
+				skills.add(name);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -349,23 +354,19 @@ public class EmployerDB {
 	 * @return Returns a list of skills
 	 * @throws SQLException
 	 */
-	public List<Skill> getSkills() throws SQLException {
+	public ArrayList<String> getSkills() throws SQLException {
 		if (mConnection == null) {
 			mConnection = DataConnection.getConnection();
 		}
 		Statement stmt = null;
-		String query = "SELECT * FROM Skill";
-		List<Skill> skills = new ArrayList<Skill>();
+		String query = "SELECT `name` FROM Skill";
+		ArrayList<String> skills = new ArrayList<String>();
 		try {
 			stmt = mConnection.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
-				int skillID = rs.getInt("skillID");
-				int employerID = rs.getInt("employerID");
 				String name = rs.getString("name");
-				Skill skill = new Skill(Integer.toString(employerID), name);
-				skill.setID(Integer.toString(skillID));
-				skills.add(skill);
+				skills.add(name);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -383,11 +384,14 @@ public class EmployerDB {
 	/**
 	 * Adds a new skill to the Skill table.
 	 * 
-	 * @param skill Skill to be added to the database
+	 * @param employerID
+	 * 			Unique ID of the employer where the skill was used
+	 * @param name
+	 * 			Name of the skill
 	 * @return Returns "Added Skill Successfully" or "Error adding skill: " with
 	 *         the sql exception.
 	 */
-	public String addSkill(Skill skill) {
+	public String addSkill(String employerID, String name) {
 		String sql = "INSERT INTO Skill(employerID, `name`) VALUES "
 				+ "(?, ?); ";
 
@@ -402,8 +406,8 @@ public class EmployerDB {
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = mConnection.prepareStatement(sql);
-			preparedStatement.setInt(1, Integer.parseInt(skill.getEmployerID()));
-			preparedStatement.setString(2, skill.getName());
+			preparedStatement.setInt(1, Integer.parseInt(employerID));
+			preparedStatement.setString(2, name);
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -415,12 +419,15 @@ public class EmployerDB {
 	/**
 	 * Deletes a skill within the Skill table.
 	 * 
-	 * @param skill Skill to be deleted.
+	 * @param employerID
+	 * 			Unique ID of the employer where the skill was used
+	 * @param name
+	 * 			Name of the skill
 	 * @return Returns "Deleted Skill Successfully" or "Error deleting skill: " with
 	 *         the sql exception.
 	 */
-	public String deleteSkill(Skill skill) {
-		String sql = "DELETE FROM Skill WHERE skillID = ?";
+	public String deleteSkill(String employerID, String name) {
+		String sql = "DELETE FROM Skill WHERE employerID = ? AND `name` = ?";
 
 		if (mConnection == null) {
 			try {
@@ -433,7 +440,8 @@ public class EmployerDB {
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = mConnection.prepareStatement(sql);
-			preparedStatement.setInt(1, Integer.parseInt(skill.getID()));
+			preparedStatement.setInt(1, Integer.parseInt(employerID));
+			preparedStatement.setString(2, name);
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
