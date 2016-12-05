@@ -10,6 +10,7 @@ import java.util.ArrayList;
  *
  */
 public class Employer {
+	private String myID;
 	private String myCompanyName;
 	private String myStartDate;
 	private double mySalary;
@@ -33,6 +34,7 @@ public class Employer {
 		this.setPosition(thePosition);
 		
 		mySkillsList = new ArrayList<String>();
+		
 		this.mySkillsList.add(theSkill);
 	}
 	
@@ -59,6 +61,15 @@ public class Employer {
 		this.mySkillsList.add(s);
 		}
 		
+	}
+	
+	public Employer(String theCompanyName, String theStartDate) {
+		this.myCompanyName = theCompanyName;
+		this.myStartDate = theStartDate;
+		this.mySalary = 0;
+		this.myPosition = null;
+		
+		mySkillsList = new ArrayList<String>();
 	}
 
 	public void setPosition(String thePosition) {
@@ -122,6 +133,14 @@ public class Employer {
 		}
 		
 		return tempList;
+	}
+
+	public String getID() {
+		return myID;
+	}
+
+	public void setID(String myID) {
+		this.myID = myID;
 	}
 
 }
