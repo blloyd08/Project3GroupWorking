@@ -73,7 +73,7 @@ implements ActionListener,TableModelListener {
 		mStudentID = theStudentID;
 		setLayout(new BorderLayout());
 		mEmployerList = getData(theStudentID); 
-		mSkillsList = getTransferData();
+		getTransferData();
 		
 		createComponents();
 		setVisible(true);
@@ -81,22 +81,19 @@ implements ActionListener,TableModelListener {
 	}
 
 
-	private List<Skill> getTransferData() {
-		List<Skill> temp = new ArrayList<>();
+	private void getTransferData() {
 		int i = 0;
 		for(Employer emp: mEmployerList ){
 			
 			mSkillData[i][0] = emp.getCompanyName();
 			for(String skill:emp.getSkills() ){
 				
-				mSkillData[i][1]emp= skill;
+				mSkillData[i][1]= skill;
 				i++;
 			}
 			
 		}
 		
-		
-		return null;
 	}
 
 
@@ -128,8 +125,12 @@ implements ActionListener,TableModelListener {
 
 		mBtnAdd = new JButton("Add Employer");
 		mBtnAdd.addActionListener(this);
+		
+		mBtnAddSkills = new JButton("Add Skills");
+		mBtnAddSkills.addActionListener(this);
 
 		mPnlButtons.add(mBtnEmploymentList);
+		mPnlButtons.add(mBtnAdd);
 		mPnlButtons.add(mBtnAdd);
 
 		add(mPnlButtons, BorderLayout.NORTH);
@@ -140,6 +141,7 @@ implements ActionListener,TableModelListener {
 		mScrollPane = new JScrollPane(mTable);
 		mPnlList.add(mScrollPane);
 		mTable.getModel().addTableModelListener(this);
+		
 
 		//Add Panel- allows input to add a new employer
 		mPnlAdd = new JPanel();
@@ -266,7 +268,7 @@ implements ActionListener,TableModelListener {
 		
 		//Adding To the collection
 		Employer mEmp;
-		mEmp = new Employer(mEmpName, salary, mDate, mPosition);
+		mEmp = new Employer(mEmpName, mDate, salary,mPosition);
 		
 		String message = "Employer add failed";
 		if (EmployerCollection.add(mEmp)) {
