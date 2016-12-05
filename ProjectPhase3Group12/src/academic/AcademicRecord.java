@@ -6,12 +6,13 @@ package academic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 /**
  * @author Andrew,Brandon,Brian
  *
  */
-public class AcademicRecord {
+public class AcademicRecord extends Observable {
 	
 	private String myID;
 	private String myStudentID;
@@ -34,6 +35,8 @@ public class AcademicRecord {
 		this.setUWEmail(theUWEmail);
 		this.setExternalEmail(myExternalEmail);
 		this.setGPA(theGPA);
+		
+		myTransferSchools = new ArrayList<TransferSchool>();
 	}
 	
 	public AcademicRecord(String studentID, String theProgram, String theDegreeLevel, String theGraduationTerm, String theGraduationYear,

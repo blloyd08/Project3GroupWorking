@@ -3,7 +3,9 @@
  */
 package student;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import academic.AcademicRecord;
 import employment.Employer;
@@ -12,25 +14,27 @@ import employment.Employer;
  * @author Andrew,Brandon,Brian
  *
  */
-public class Student {
+public class Student extends Observable {
 
 	private String myID;
 	private String myFirstName;
 	private String myLastName;
 	private AcademicRecord myAcademicRecord;
-	private List<Employer> myEmployers;
+	private ArrayList<Employer> myEmployers;
 	
 	/**
 	 * This Constructor should be used in most cases.
-	 * @param theName for te students name.
+	 * @param theName for the students name.
 	 * @param theRecord for any existing academic record.
 	 * @param theEmployers for any employers the student already has.
 	 */
-	public Student(String theFirstName, String theLastName, AcademicRecord theRecord, List<Employer> theEmployers) {
+	public Student(String theFirstName, String theLastName, AcademicRecord theRecord, ArrayList<Employer> theEmployers) {
 		
 		this.setFirstName(theFirstName);
 		this.setLastName(theLastName);
 		addAcademicRecord(theRecord);
+		
+		myEmployers = new ArrayList<Employer>();
 		
 		for(Employer e : theEmployers) {
 			addEmployer(e);
@@ -49,22 +53,41 @@ public class Student {
 		/**
 		 * This allows a record to be created, and editable for future use.
 		 */
+		myEmployers = new ArrayList<Employer>();
 		addAcademicRecord(new AcademicRecord("none", "undecided", "undecided", "none",
 					"none" , "none", "none", 0));
 	}
 	
-	protected boolean addAcademicRecord(AcademicRecord theRecord) {
+	public boolean addAcademicRecord(AcademicRecord theRecord) {
 		
 		boolean flag = false;
 		
 		try {
 			myAcademicRecord = new AcademicRecord(theRecord.getStudentID(), theRecord.getProgram(), theRecord.getDegreeLevel(),
-					theRecord.getGraduationTerm(), theRecord.getGraduationYear(), theRecord.getUWEmail(), theRecord.getExternalEmail(), theRecord.getGPA());
+					theRecord.getGraduationTerm(), theRecord.getGraduationYear(), theRecord.getUWEmail(), 
+						theRecord.getExternalEmail(), theRecord.getGPA());
+				
 				flag = true;
 			} catch(Exception e) {
 				
 				flag = false;
 			}
+			
+			return flag;
+	}
+	
+	public boolean addEmployer(Employer theEmployer) {
+		
+		boolean flag = false;
+		
+		try {
+			myEmployers.add(theEmployer);
+			flag = true;
+			
+		} catch(Exception e) {
+				
+				flag = false;
+		}
 			
 			return flag;
 	}
@@ -97,8 +120,16 @@ public class Student {
 		return myEmployers;
 	}
 	
-	public void setEmployers(List<Employer> theEmployers) {
-		this.myEmployers = theEmployers;
+	public void setEmployers(ArrayList<Employer> theEmployers) {
+		//TODO setter resets the List or just adds to it?
+		for(Employer e : theEmployers) {
+			myEmployers.add(e);
+		}
+	}
+	
+	public void setEmployers(Employer theEmployer) {
+		//TODO setter resets the List or just adds to it?
+		myEmployers.add(theEmployer);
 	}
 
 	public String getID() {
