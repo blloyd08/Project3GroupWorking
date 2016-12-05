@@ -99,11 +99,11 @@ public class EmployerDB {
 	 * @return Returns all employers for the student with the given student id
 	 * @throws SQLException
 	 */
-	public List<Employer> getEmployers(String studentID) throws SQLException {
+	public ArrayList<Employer> getEmployers(String studentID) throws SQLException {
 		if (mConnection == null) {
 			mConnection = DataConnection.getConnection();
 		}
-		List<Employer> employers = new ArrayList<Employer>();
+		ArrayList<Employer> employers = new ArrayList<Employer>();
 		PreparedStatement stmt = null;
 		String query = "SELECT * from Employer where studentID = ?";
 		try {
@@ -206,13 +206,13 @@ public class EmployerDB {
 	 * @return Returns all employers from the Employer table.
 	 * @throws SQLException
 	 */
-	public List<Employer> getEmployers() throws SQLException {
+	public ArrayList<Employer> getEmployers() throws SQLException {
 		if (mConnection == null) {
 			mConnection = DataConnection.getConnection();
 		}
 		Statement stmt = null;
 		String query = "SELECT * from Employer";
-		List<Employer> employers = new ArrayList<Employer>();
+		ArrayList<Employer> employers = new ArrayList<Employer>();
 		try {
 			stmt = mConnection.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
