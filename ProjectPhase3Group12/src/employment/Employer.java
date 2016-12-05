@@ -39,27 +39,22 @@ public class Employer {
 	}
 	
 	/**
-	 * This overloaded constructor takes an entire list of skills instead of a single skill.
+	 * This overloaded constructor takes no skills, but everything else.
 	 * 
 	 * @param theCompanyName
 	 * @param theStartDate
 	 * @param theSalary
 	 * @param thePosition
-	 * @param theSkillsList
 	 */
 	public Employer(String theCompanyName, String theStartDate, double theSalary,
-			String thePosition, ArrayList<String> theSkillsList) {
+			String thePosition) {
 		
 		this.setCompanyName(theCompanyName);
 		this.setStartDate(theStartDate);
 		this.setSalary(theSalary);
 		this.setPosition(thePosition);
-
-		mySkillsList = new ArrayList<String>();
 		
-		for(String s: theSkillsList) {
-		this.mySkillsList.add(s);
-		}
+		mySkillsList = new ArrayList<String>();
 		
 	}
 	

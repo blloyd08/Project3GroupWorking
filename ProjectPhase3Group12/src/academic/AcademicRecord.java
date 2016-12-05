@@ -34,6 +34,8 @@ public class AcademicRecord {
 		this.setUWEmail(theUWEmail);
 		this.setExternalEmail(myExternalEmail);
 		this.setGPA(theGPA);
+		
+		myTransferSchools = new ArrayList<TransferSchool>();
 	}
 	
 	public AcademicRecord(String studentID, String theProgram, String theDegreeLevel, String theGraduationTerm, String theGraduationYear,
