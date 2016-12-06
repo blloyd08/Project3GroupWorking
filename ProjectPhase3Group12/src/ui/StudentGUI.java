@@ -52,8 +52,8 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 	private JButton employerSearchButton;
 
 	private JPanel addStudentPanel;
-	private JLabel[] studentTextLabels = new JLabel[8];
-	private JTextField[] studentTextFields = new JTextField[8];
+	private JLabel[] studentTextLabels = new JLabel[3];
+	private JTextField[] studentTextFields = new JTextField[3];
 	private JButton addStudentsButton;
 
 	/**
@@ -67,7 +67,6 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 		setLayout(new BorderLayout());
 
 		setUpComponents();
-		setVisible(true);
 		setSize(500, 500);
 	}
 
