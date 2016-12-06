@@ -27,6 +27,30 @@ public class Employer extends Observable {
 	private ArrayList<String> mySkillsList;
 	
 	/**
+	 * This is the constructor used by the database to return objects of this type.
+	 * 
+	 * @param id Unique id of the employer created by the database
+	 * @param theCompanyName for the name of the company.
+	 * @param theStartDate to see if this was an internship (i.e. startDate < graduationDate).
+	 * @param theSalary for the yearly pay.
+	 * @param thePosition for the title of their position.
+	 * @param theSkills list of skills that the employer already has.
+	 */
+	public Employer(String employerID, String theCompanyName, String theStartDate, double theSalary,
+			String thePosition, ArrayList<String> theSkills) {
+		myID = employerID;
+		myCompanyName = theCompanyName;
+		myStartDate = theStartDate;
+		mySalary = theSalary;
+		myPosition = thePosition;
+		mySkillsList = theSkills;
+		this.setCompanyName(theCompanyName);
+		this.setStartDate(theStartDate);
+		this.setSalary(theSalary);
+		this.setPosition(thePosition);
+	}
+	
+	/**
 	 * This is the first constructor that takes a single skill to add to the list.
 	 * 
 	 * @param theCompanyName for the name of the company.

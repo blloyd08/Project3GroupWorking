@@ -123,7 +123,7 @@ public class StudentDB {
 			//Build object
 			String stringID = Integer.toString(id);
 			AcademicRecord record = AcademicCollection.getAcademicRecord(stringID);
-			List<Employer> employers = EmployerCollection.getEmployers(stringID);
+			ArrayList<Employer> employers = EmployerCollection.getEmployers(stringID);
 			
 			Student student = new Student(stringID, firstName, lastName, record, employers);		
 			students.add(student);
