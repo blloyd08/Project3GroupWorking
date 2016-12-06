@@ -50,6 +50,8 @@ implements ActionListener,TableModelListener, Observer {
 	private JTable mTable;
 	private JScrollPane mScrollPane;
 	private JLabel mLblAcademic,mLblTransfer;
+	private JPanel mPnlTaband;
+	
 	
 	//variables for academic record
 	private JPanel mStudentCurrentAcademicPnl;
@@ -155,6 +157,7 @@ implements ActionListener,TableModelListener, Observer {
 
 				//main panel that list academic and transferSchools for a student
 				mPnlList = new JPanel();
+				
 				mStudentCurrentAcademicPnl=createAcaPnl();
 				
 				
@@ -166,32 +169,33 @@ implements ActionListener,TableModelListener, Observer {
 				
 				
 				mPnlList.add(mStudentCurrentAcademicPnl);
-				mPnlList.add(mTable);
+				mPnlList.add(mScrollPane);
 				
 				mTable.getModel().addTableModelListener(this);
 				
 
 				//Add Panel- allows User to add/edit academic and tra
-				mPnlAdd = new JPanel();
-				
-			
-				mPnlAcademic = createEditAcaPnl();
+				mPnlAdd = new JPanel(new GridLayout(7,1));
 				
 				
+				//mPnlAcademic = createEditAcaPnl();
 				
-				mBtnAddAcad = new JButton("Add/Edit Academic Info:");
+				
+				
+				mBtnAddAcad = new JButton("Add/Edit Academic Info");
 				mBtnAddAcad.addActionListener(this);
 				mPnlAdd.add(createEditAcaPnl());
 				mPnlAdd.add(mBtnAddAcad);
 				
 				//Create Transfer Add panel
-				mPnlAddtrans = new JPanel();
+				String[] mTransferLblString = {"Enter Name: ","Enter GPA: ","Enter Degree Earned: "};
+				mPnlAddtrans = new JPanel(new GridLayout(4,1));
 				
 				for (int i = 0; i < mTransferStrings.length; i++) {
 					JPanel panel = new JPanel();
 					
 					panel.setLayout(new GridLayout(1, 0));
-					txfLabeltrans[i] = new JLabel(mTransferStrings[i]);
+					txfLabeltrans[i] = new JLabel(mTransferLblString[i]);
 					txfFieldtrans[i] = new JTextField(10);
 					panel.add(txfLabeltrans[i]);
 					panel.add(txfFieldtrans[i]);
@@ -214,13 +218,13 @@ private JPanel createEditAcaPnl() {
 	String mLabelName[] = {"Enter Program Name:","Enter Degree Level:","Enter Graduation Term:","Enter Graduation Year:","Enter UW Email:",
 									"Enter External Email:", "Enter GPA:"};
 	mPnlAcademic = new JPanel();
-	mPnlAcademic.setLayout(new GridLayout(7,2));
+	mPnlAcademic.setLayout(new GridLayout(7,1));
 	for (int i = 0; i < mLabelName.length; i++) {
 		JPanel panel = new JPanel();
 		System.out.println("here");
 		panel.setLayout(new GridLayout(1, 0));
 		txfLabel[i] = new JLabel(mLabelName[i]);
-		txfField[i] = new JTextField(25);
+		txfField[i] = new JTextField(15);
 		panel.add(txfLabel[i]);
 		panel.add(txfField[i]);
 		mPnlAcademic.add(panel);
@@ -393,17 +397,17 @@ private JPanel createAcaPnl() {
 		}
 		JOptionPane.showMessageDialog(null, message);
 		
-		String mprogram = txfFieldtrans[0].getText();
-		if (mprogram.length() == 0) {
+		String mprogramt = txfFieldtrans[0].getText();
+		if (mprogramt.length() == 0) {
 			JOptionPane.showMessageDialog(null, "Enter a school name");
 			txfFieldtrans[0].setFocusable(true);
 			return;
 		}
-		String mGPA = txfFieldtrans[1].getText();
-		double mGPADO = 0.0;
-		if (mGPA.length() != 0) {
+		String mGPAt = txfFieldtrans[1].getText();
+		double mGPADOt = 0.0;
+		if (mGPAt.length() != 0) {
 			try {
-				mGPADO = Double.parseDouble(mGPA);
+				mGPADOt = Double.parseDouble(mGPAt);
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(null, "Enter GPA as decimal");
 				txfFieldtrans[1].setText("");
@@ -411,23 +415,23 @@ private JPanel createAcaPnl() {
 				return;
 			}
 		}
-		String mDegreeLvl = txfFieldtrans[2].getText();
-		if (mDegreeLvl.length() == 0) {
+		String mDegreeLvlt = txfFieldtrans[2].getText();
+		if (mDegreeLvlt.length() == 0) {
 			JOptionPane.showMessageDialog(null, "Enter a Degree Level");
 			txfFieldtrans[2].setFocusable(true);
 			return;
 		}
 		
 		//Adding To the collection
-		AcademicRecord mAC = mStudent.getAcademicRecord();
-		TransferSchool mTF = new TransferSchool("0",mAC.getID(),mprogram,mGPADO,mDegreeLvl);
+		AcademicRecord mACt = mStudent.getAcademicRecord();
+		TransferSchool mTFt = new TransferSchool("0",mACt.getID(),mprogramt,mGPADOt,mDegreeLvlt);
 		mAC.addTransferSchool(mTF);
 		
-		String message = "Transfer School add failed";
+		String messaget = "Transfer School add failed";
 		if (mStudent.addAcademicRecord(mAC)) {
-			message = "School added";
+			messaget = "School added";
 		}
-		JOptionPane.showMessageDialog(null, message);
+		JOptionPane.showMessageDialog(null, messaget);
 		
 		
 	}
