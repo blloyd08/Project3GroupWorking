@@ -80,7 +80,7 @@ public class MainGUI extends JFrame implements PropertyChangeListener {
 	}
 
 	private void createTabbedGUI(String[] tabs) {
-		for (String tabName : tabs) {
+		for(String tabName : tabs) {
 			JComponent newPanel = makeTextPanel(tabName);
 			myTabbedPane.addTab(tabName, newPanel);
 		}
@@ -92,10 +92,13 @@ public class MainGUI extends JFrame implements PropertyChangeListener {
 	private JComponent makeTextPanel(String type) {
 
 		JPanel panel = new JPanel();
-		if (type.equalsIgnoreCase("Employment")){
+		if(type.equalsIgnoreCase("Employment")) {
 			panel.add(new EmploymentGUI(mStudent));
 			System.out.println("after panel add");
-		}else {
+		} 
+		if(type.equalsIgnoreCase("Student")) {
+			panel.add(new StudentGUI(mStudent));
+		} else {
 			panel.add(new JLabel("Needs to be implemented!"));
 		}
 		
