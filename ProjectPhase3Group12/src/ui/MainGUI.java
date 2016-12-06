@@ -93,6 +93,8 @@ public class MainGUI extends JFrame implements PropertyChangeListener {
 		this.add(myTabbedPane);
 		this.setVisible(true);
 	}
+	
+	//Something
 
 	private JComponent makeTextPanel(String type) {
 
