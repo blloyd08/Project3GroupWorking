@@ -266,7 +266,7 @@ public class AcademicDB {
 			//Build object
 			String stringTransferID = Integer.toString(transferID);
 			String stringAcademicID = Integer.toString(academicID);
-			TransferSchool school = new TransferSchool(transferID, academicID, name, GPA, degree);
+			TransferSchool school = new TransferSchool(stringTransferID, stringAcademicID, name, GPA, degree);
 			schools.add(school);
 		}
 		return schools;

@@ -32,21 +32,18 @@ public class Student extends Observable {
 	
 	/**
 	 * This Constructor should be used in most cases.
-	 * @param theName for the students name.
+	 * @param theStudentID Unique ID of the student
+	 * @param theFirstName first name of the student
+	 * @param theLastName last name of the student;
 	 * @param theRecord for any existing academic record.
 	 * @param theEmployers for any employers the student already has.
 	 */
-	public Student(String theFirstName, String theLastName, AcademicRecord theRecord, ArrayList<Employer> theEmployers) {
-		
-		this.setFirstName(theFirstName);
-		this.setLastName(theLastName);
-		addAcademicRecord(theRecord);
-		
-		myEmployers = new ArrayList<Employer>();
-		
-		for(Employer e : theEmployers) {
-			addEmployer(e);
-		}
+	public Student(String theStudentID, String theFirstName, String theLastName, AcademicRecord theRecord, ArrayList<Employer> theEmployers) {
+		myID = theStudentID;
+		myFirstName = theFirstName;
+		myLastName = theLastName;
+		myAcademicRecord = theRecord;
+		myEmployers = theEmployers;
 	}
 	
 	/**
@@ -54,9 +51,10 @@ public class Student extends Observable {
 	 * @param theName is the student's name.
 	 */
 	public Student(String theFirstName, String theLastName) {
-		
-		this.setFirstName(theFirstName);
-		this.setLastName(theLastName);
+		myFirstName = theFirstName;
+		myLastName = theLastName;
+		//this.setFirstName(theFirstName);
+		//this.setLastName(theLastName);
 		
 		/**
 		 * This allows a record to be created, and editable for future use.
@@ -70,9 +68,9 @@ public class Student extends Observable {
 		boolean flag = false;
 		
 		try {
-			myAcademicRecord = new AcademicRecord(theRecord.getStudentID(), theRecord.getProgram(), theRecord.getDegreeLevel(),
+			myAcademicRecord = new AcademicRecord(theRecord.getID(),theRecord.getStudentID(), theRecord.getProgram(), theRecord.getDegreeLevel(),
 					theRecord.getGraduationTerm(), theRecord.getGraduationYear(), theRecord.getUWEmail(), 
-						theRecord.getExternalEmail(), theRecord.getGPA());
+						theRecord.getExternalEmail(), theRecord.getGPA(), theRecord.getTransferSchools());
 			AcademicCollection.add(myAcademicRecord);
 			hasChanged();
 			notifyObservers(ACADEMIC_RECORD);

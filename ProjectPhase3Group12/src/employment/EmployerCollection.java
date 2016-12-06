@@ -119,39 +119,7 @@ public class EmployerCollection {
 		return true;
 	}
 
-	/**
-	 * Deletes the particular employer and all skill related to the employer
-	 * 
-	 * @param employer
-	 *            Employer to be delete
-	 * @return true or false
-	 */
-	public static boolean delete(Employer employer) {
-		if (mEmployerDB == null) {
-			mEmployerDB = new EmployerDB();
-		}
 
-		// Handle no employer or no ID
-		if (employer == null || employer.getID() == null) {
-			return false;
-		}
-		
-		//Handle deleting related skills
-		List<String> skills = employer.getSkills();
-		if (skills != null && skills.size() > 0){
-			for (String skill : skills){
-				if (!EmployerCollection.delete(employer.getID(), skill)){
-					return false;
-				}
-			}
-		}
-		
-		String message = mEmployerDB.deleteEmployer(employer);
-		if (message.startsWith("Error deleting employer: ")) {
-			return false;
-		}
-		return true;
-	}
 	
 	/**
 	 * Deletes the particular skill from the database
