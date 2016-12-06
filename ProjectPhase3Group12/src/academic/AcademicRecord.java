@@ -15,7 +15,6 @@ import java.util.Observer;
  */
 public class AcademicRecord extends Observable {
 	
-	public static final String ID = "ID";
 	public static final String STUDENT_ID = "STUDENT_ID";
 	public static final String PROGRAM = "PROGRAM";
 	public static final String DEGREE_LEVEL = "DEGREE_LEVEL";
@@ -70,28 +69,49 @@ public class AcademicRecord extends Observable {
 
 	public void setID(String theID) {
 		this.myID = theID;
+	}
+	
+	public String getStudentID() {
+		return myStudentID;
+	}
+
+	public void setStudentID(String theStudentID) {
+		this.myStudentID = theStudentID;
 		hasChanged();
-		notifyObservers(ID);
-		AcademicCollection.update(this, "01", myID);
+		AcademicCollection.update(this, "studentID", myStudentID);
+		notifyObservers(STUDENT_ID);
 	}
 
 	public String getProgram() {
 		return myProgram;
 	}
 
-	public void setProgram(String myProgram) {
-		this.myProgram = myProgram;
+	public void setProgram(String theProgram) {
+		this.myProgram = theProgram;
 		hasChanged();
+		AcademicCollection.update(this, "program", theProgram);
 		notifyObservers(PROGRAM);
+	}
+	
+	public String getDegreeLevel() {
+		return myDegreeLevel;
+	}
+
+	public void setDegreeLevel(String theDegreeLevel) {
+		this.myDegreeLevel = theDegreeLevel;
+		hasChanged();
+		AcademicCollection.update(this, "degreeLevel", myDegreeLevel);
+		notifyObservers(DEGREE_LEVEL);
 	}
 
 	public String getGraduationTerm() {
 		return myGraduationTerm;
 	}
 
-	public void setGraduationTerm(String myGraduationTerm) {
-		this.myGraduationTerm = myGraduationTerm;
+	public void setGraduationTerm(String theGraduationTerm) {
+		this.myGraduationTerm = theGraduationTerm;
 		hasChanged();
+		AcademicCollection.update(this, "graduationTerm", myGraduationTerm);
 		notifyObservers(GRADUATION_TERM);
 	}
 
@@ -99,9 +119,10 @@ public class AcademicRecord extends Observable {
 		return myGraduationYear;
 	}
 
-	public void setGraduationYear(String myGraduationYear) {
-		this.myGraduationYear = myGraduationYear;
+	public void setGraduationYear(String theGraduationYear) {
+		this.myGraduationYear = theGraduationYear;
 		hasChanged();
+		AcademicCollection.update(this, "graduationYear", myGraduationYear);
 		notifyObservers(GRADUATION_YEAR);
 	}
 
@@ -109,9 +130,10 @@ public class AcademicRecord extends Observable {
 		return myUWEmail;
 	}
 
-	public void setUWEmail(String myUWEmail) {
-		this.myUWEmail = myUWEmail;
+	public void setUWEmail(String theUWEmail) {
+		this.myUWEmail = theUWEmail;
 		hasChanged();
+		AcademicCollection.update(this, "uwEmail", myUWEmail);
 		notifyObservers(UW_EMAIL);
 	}
 
@@ -119,9 +141,10 @@ public class AcademicRecord extends Observable {
 		return myExternalEmail;
 	}
 
-	public void setExternalEmail(String myExternalEmail) {
-		this.myExternalEmail = myExternalEmail;
+	public void setExternalEmail(String theExternalEmail) {
+		this.myExternalEmail = theExternalEmail;
 		hasChanged();
+		AcademicCollection.update(this, "externalEmail", myExternalEmail);
 		notifyObservers(EXTERNAL_EMAIL);
 	}
 
@@ -129,9 +152,10 @@ public class AcademicRecord extends Observable {
 		return myGPA;
 	}
 
-	public void setGPA(double myGPA) {
-		this.myGPA = myGPA;
+	public void setGPA(double theGPA) {
+		this.myGPA = theGPA;
 		hasChanged();
+		AcademicCollection.update(this, "GPA", myGPA);
 		notifyObservers(GPA);
 	}
 
@@ -141,11 +165,14 @@ public class AcademicRecord extends Observable {
 	
 	public void setTransferSchools(ArrayList<TransferSchool> thePreviousSchools) {
 		
+		myTransferSchools = new ArrayList<TransferSchool>();
+		
 		for( TransferSchool t : thePreviousSchools) {
 			myTransferSchools.add(t);
+			AcademicCollection.add(t);
+			hasChanged();
+			notifyObservers(TRANSFER_SCHOOLS);
 		}
-		hasChanged();
-		notifyObservers(TRANSFER_SCHOOLS);
 	}
 
 	public boolean addTransferSchool(TransferSchool theTransferSchool){
@@ -156,6 +183,7 @@ public class AcademicRecord extends Observable {
 			myTransferSchools.add(theTransferSchool);
 			flag = true;
 			hasChanged();
+			AcademicCollection.add(theTransferSchool);
 			notifyObservers(TRANSFER_SCHOOLS);
 			
 		} catch(Exception e) {
@@ -165,29 +193,9 @@ public class AcademicRecord extends Observable {
 		
 		return flag;
 	}
-
-	public String getDegreeLevel() {
-		return myDegreeLevel;
-	}
-
-	public void setDegreeLevel(String myDegreeLevel) {
-		this.myDegreeLevel = myDegreeLevel;
-		hasChanged();
-		notifyObservers(DEGREE_LEVEL);
-	}
-
-	public String getStudentID() {
-		return myStudentID;
-	}
-
-	public void setStudentID(String studentID) {
-		this.myStudentID = studentID;
-		hasChanged();
-		notifyObservers(STUDENT_ID);
-	}
 	
-	public void addToObservers(Observer observerObj) {
-		this.addObserver(observerObj);
+	public void addToObservers(Observer theObserver) {
+		this.addObserver(theObserver);
 	}
 
 }
