@@ -32,7 +32,13 @@ public class AcademicDB {
 	 * @return Returns a message with success or failure.
 	 */
 	public String updateAcademicRecord(AcademicRecord record, String columnName, Object data) {
-
+		if (mConnection == null) {
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		String sql = "UPDATE AcademicRecord SET `" + columnName + "` = ?  WHERE academicID = ?";
 		// For debugging - System.out.println(sql);
 		PreparedStatement preparedStatement = null;
@@ -104,7 +110,11 @@ public class AcademicDB {
 	 */
 	public AcademicRecord getAcademicRecord(String studentID) throws SQLException {
 		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		PreparedStatement stmt = null;
 		String query = "select * " + "from AcademicRecord where studentID = ?";
@@ -113,23 +123,9 @@ public class AcademicDB {
 			stmt = mConnection.prepareStatement(query);
 			stmt.setInt(1, Integer.parseInt(studentID));
 			ResultSet rs = stmt.executeQuery();
-			while (rs.next()) {
-				int id = rs.getInt("academicID");
-				int resultStudentID = rs.getInt("studentID");
-				String stringStudentID = Integer.toString(resultStudentID);
-				String program = rs.getString("program");
-				String degreeLevel = rs.getString("degreeLevel");
-				String graduationTerm = rs.getString("graduationTerm");
-				String graduationYear = rs.getString("graduationYear");
-				String uwEmail = rs.getString("uwEmail");
-				String externalEmail = rs.getString("externalEmail");
-				double GPA = rs.getDouble("GPA");
-				record = new AcademicRecord(stringStudentID, program, degreeLevel,
-						graduationTerm, graduationYear, uwEmail, externalEmail, GPA);
-				record.setID(Integer.toString(id));
-				List<TransferSchool> transferSchools = getTransferSchools(record.getID());
-				record.setTransferSchools(transferSchools);
-				return record;
+			List<AcademicRecord> records =  buildAcademicRecord(rs);
+			if (records.size() > 0){
+				record = records.get(0);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -144,6 +140,30 @@ public class AcademicDB {
 		return record;
 	}
 	
+	private ArrayList<AcademicRecord> buildAcademicRecord(ResultSet rs) throws SQLException {
+		ArrayList<AcademicRecord> records = new ArrayList<AcademicRecord>();
+		while (rs.next()) {
+			int id = rs.getInt("academicID");
+			int resultStudentID = rs.getInt("studentID");
+			String stringStudentID = Integer.toString(resultStudentID);
+			String program = rs.getString("program");
+			String degreeLevel = rs.getString("degreeLevel");
+			String graduationTerm = rs.getString("graduationTerm");
+			String graduationYear = rs.getString("graduationYear");
+			String uwEmail = rs.getString("uwEmail");
+			String externalEmail = rs.getString("externalEmail");
+			double GPA = rs.getDouble("GPA");
+			
+			//Construct Object
+			String academicID = Integer.toString(id);
+			ArrayList<TransferSchool> transferSchools = getTransferSchools(academicID);
+			AcademicRecord record = new AcademicRecord(academicID, stringStudentID, program, degreeLevel,
+					graduationTerm, graduationYear, uwEmail, externalEmail, GPA, transferSchools);
+			records.add(record);
+		}
+		return records;
+	}
+	
 	/**
 	 * Gets  all academic records from the AcademicRecord and TransferSchool tables
 	 * 
@@ -152,7 +172,11 @@ public class AcademicDB {
 	 */
 	public List<AcademicRecord> getAcademicRecord() throws SQLException {
 		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		Statement stmt = null;
 		String query = "select * " + "from AcademicRecord";
@@ -161,25 +185,7 @@ public class AcademicDB {
 		try {
 			stmt = mConnection.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
-			while (rs.next()) {
-				int academicID = rs.getInt("academicID");
-				int studentID = rs.getInt("studentID");
-				String stringStudentID = Integer.toString(studentID);
-				String program = rs.getString("program");
-				String degreeLevel = rs.getString("degreeLevel");
-				String graduationTerm = rs.getString("graduationTerm");
-				String graduationYear = rs.getString("graduationYear");
-				String uwEmail = rs.getString("uwEmail");
-				String externalEmail = rs.getString("externalEmail");
-				double GPA = rs.getDouble("GPA");
-				AcademicRecord record = new AcademicRecord(stringStudentID, program, degreeLevel,
-						graduationTerm, graduationYear, uwEmail, externalEmail, GPA);
-				record.setID(Integer.toString(academicID));
-				List<TransferSchool> transferSchools = getTransferSchools(record.getID());
-				record.setTransferSchools(transferSchools);
-				
-				records.add(record);
-			}
+			records = buildAcademicRecord(rs);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println(e);
@@ -203,6 +209,13 @@ public class AcademicDB {
 	 */
 	public String updateTransferSchool(TransferSchool school, String columnName, Object data) {
 
+		if (mConnection == null) {
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		String sql = "UPDATE TransferSchool SET `" + columnName + "` = ?  WHERE transferID = ?";
 		// For debugging - System.out.println(sql);
 		PreparedStatement preparedStatement = null;
@@ -215,7 +228,10 @@ public class AcademicDB {
 				preparedStatement.setDouble(1, (double)data);
 			}
 			preparedStatement.setInt(2, Integer.parseInt(school.getID())); // for transferID
-			preparedStatement.executeUpdate();
+			int updatedRows = preparedStatement.executeUpdate();
+			if (updatedRows == 0){
+				return "Error updating transfer school: Executed successfully but nothing updated";
+			}
 		} catch (SQLException e) {
 			System.out.println(e);
 			e.printStackTrace();
@@ -233,7 +249,11 @@ public class AcademicDB {
 	 */
 	public TransferSchool getTransferSchool(String transferID) throws SQLException {
 		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		PreparedStatement stmt = null;
 		int intTransferID = Integer.parseInt(transferID);
@@ -243,17 +263,11 @@ public class AcademicDB {
 			stmt = mConnection.prepareStatement(query);
 			stmt.setInt(1, intTransferID);
 			ResultSet rs = stmt.executeQuery();
-			while (rs.next()) {
-				int returnTransferID = rs.getInt("transferID");
-				int academicID = rs.getInt("academicID");
-				String name = rs.getString("name");
-				double GPA = rs.getDouble("GPA");
-				String degree = rs.getString("degreeEarned");
-				school = new TransferSchool(name, GPA, degree);
-				school.setAcademicID(Integer.toString(academicID));
-				school.setID(Integer.toString(returnTransferID));
-				return school;
+			ArrayList<TransferSchool> schools = buildTransferSchools(rs);
+			if (schools.size() > 0){
+				school = schools.get(0);
 			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println(e);
@@ -265,6 +279,24 @@ public class AcademicDB {
 		return school;
 	}
 	
+	private ArrayList<TransferSchool> buildTransferSchools(ResultSet rs) throws SQLException{
+		ArrayList<TransferSchool> schools = new ArrayList<TransferSchool>();
+		while (rs.next()) {
+			int transferID = rs.getInt("transferID");
+			int academicID = rs.getInt("academicID");
+			String name = rs.getString("name");
+			double GPA = rs.getDouble("GPA");
+			String degree = rs.getString("degreeEarned");
+			
+			//Build object
+			String stringTransferID = Integer.toString(transferID);
+			String stringAcademicID = Integer.toString(academicID);
+			TransferSchool school = new TransferSchool(stringTransferID, stringAcademicID, name, GPA, degree);
+			schools.add(school);
+		}
+		return schools;
+	}
+	
 	/**
 	 * Gets  the transfer school for the academic record with the given academic record id from
 	 *  the TransferSchool tables
@@ -273,29 +305,24 @@ public class AcademicDB {
 	 * @return Returns a list of transfer schools that correspond to the given academic record id
 	 * @throws SQLException
 	 */
-	public List<TransferSchool> getTransferSchools(String recordID) throws SQLException {
+	public ArrayList<TransferSchool> getTransferSchools(String recordID) throws SQLException {
 		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		PreparedStatement preparedStmt = null;
 		int academicID = Integer.parseInt(recordID);
 		String query = "SELECT * FROM TransferSchool WHERE academicID = ?";
-		List<TransferSchool> schools = new ArrayList<TransferSchool>();
+		ArrayList<TransferSchool> schools = new ArrayList<TransferSchool>();
+		
 		try {
 			preparedStmt = mConnection.prepareStatement(query);
 			preparedStmt.setInt(1, academicID);
 			ResultSet rs = preparedStmt.executeQuery();
-			while (rs.next()) {
-				int transferID = rs.getInt("transferID");
-				academicID = rs.getInt("academicID");
-				String name = rs.getString("name");
-				double GPA = rs.getDouble("GPA");
-				String degree = rs.getString("degreeEarned");
-				TransferSchool school = new TransferSchool(name, GPA, degree);
-				school.setAcademicID(Integer.toString(academicID));
-				school.setID(Integer.toString(transferID));
-				schools.add(school);
-			}
+			schools = buildTransferSchools(rs);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println(e);
@@ -319,7 +346,11 @@ public class AcademicDB {
 	 */
 	public List<TransferSchool> getTransferSchools() throws SQLException {
 		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		Statement stmt = null;
 		String query = "SELECT * FROM TransferSchool";
@@ -327,17 +358,7 @@ public class AcademicDB {
 		try {
 			stmt = mConnection.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
-			while (rs.next()) {
-				int transferID = rs.getInt("transferID");
-				int academicID = rs.getInt("academicID");
-				String name = rs.getString("name");
-				double GPA = rs.getDouble("GPA");
-				String degree = rs.getString("degreeEarned");
-				TransferSchool school = new TransferSchool(name, GPA, degree);
-				school.setAcademicID(Integer.toString(academicID));
-				school.setID(Integer.toString(transferID));
-				schools.add(school);
-			}
+			schools = buildTransferSchools(rs);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println(e);
@@ -347,7 +368,7 @@ public class AcademicDB {
 			}
 		}
 		
-		//Returned null if no records found
+		//Returned empty list if no records found
 		return schools;
 	}
 	
@@ -381,39 +402,9 @@ public class AcademicDB {
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return "Error adding transfer school: " + e.getMessage();
+			return "Error adding academic record: " + e.getMessage();
 		}
 		return "Added Transfer School Successfully";
-	}
-	
-	/**
-	 * Deletes a transfer school within the TransferSchool table.
-	 * 
-	 * @param school transfer school to be deleted
-	 * @return Returns "Deleted TransferSchool Successfully" or "Error deleteing transfer school: " with
-	 *         the sql exception.
-	 */
-	public String deleteTransferSchool(TransferSchool school) {
-		String sql = "DELETE FROM TransferSchool WHERE transferID = ?";
-
-		if (mConnection == null) {
-			try {
-				mConnection = DataConnection.getConnection();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		PreparedStatement preparedStatement = null;
-		try {
-			preparedStatement = mConnection.prepareStatement(sql);
-			preparedStatement.setInt(1, Integer.parseInt(school.getID()));
-			preparedStatement.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return "Error deleting transfer school: " + e.getMessage();
-		}
-		return "Deleted Transfer School Successfully";
 	}
 	
 }
