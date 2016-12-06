@@ -32,7 +32,7 @@ public class EmployerCollection {
 
 		String message = mEmployerDB.addEmployer(employer, studentID);
 
-		if (message.startsWith("Error adding employer:")) {
+		if (message.startsWith("Error adding employer: ")) {
 			return false;
 		}
 
@@ -84,6 +84,12 @@ public class EmployerCollection {
 		if (mEmployerDB == null) {
 			mEmployerDB = new EmployerDB();
 		}
+		
+		if (employer.getID() == null){
+			System.err.println("Employer ID is null");
+			return false;
+		}
+		
 		String message = mEmployerDB.updateEmployer(employer, column, data);
 		if (message.startsWith("Error updating employer: ")) {
 			return false;

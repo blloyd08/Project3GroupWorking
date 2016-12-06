@@ -32,6 +32,9 @@ public class EmployerCollectionTest {
 	 */
 	@Test
 	public void testAddEmployerString() {
+		Employer newEmp = new Employer("Name","2000-01-23");
+		newEmp.setPosition("newPos");
+		assertTrue(EmployerCollection.add(newEmp, "4"));
 		
 	}
 
@@ -39,8 +42,8 @@ public class EmployerCollectionTest {
 	 * Test method for {@link employment.EmployerCollection#add(java.lang.String, java.lang.String)}.
 	 */
 	@Test
-	public void testAddStringString() {
-		fail("Not yet implemented");
+	public void testAddSkill() {
+		assertTrue(EmployerCollection.add("2", "NewSkill"));
 	}
 
 	/**
@@ -48,15 +51,20 @@ public class EmployerCollectionTest {
 	 */
 	@Test
 	public void testUpdateEmployerStringObject() {
-		fail("Not yet implemented");
+		Employer testEmployer = new Employer("Test2","2011-12-15", 0.00, "firstPosition");
+		testEmployer.setID("2");
+		//assertTrue(EmployerCollection.update(testEmployer, "name", (Object)"NewName"));
+		//assertTrue(EmployerCollection.update(testEmployer, "salary", (Object)1.0));
+		//assertTrue(EmployerCollection.update(testEmployer, "startDate", (Object)"2016-12-13"));
+		assertTrue(EmployerCollection.update(testEmployer, "position", (Object)"newPos"));
 	}
 
 	/**
 	 * Test method for {@link employment.EmployerCollection#update(java.lang.String, java.lang.String, java.lang.String)}.
 	 */
 	@Test
-	public void testUpdateStringStringString() {
-		fail("Not yet implemented");
+	public void testUpdateSkill() {
+		assertTrue(EmployerCollection.update("2", "NewSkill", "NewerSkill"));
 	}
 
 	/**
@@ -71,8 +79,8 @@ public class EmployerCollectionTest {
 	 * Test method for {@link employment.EmployerCollection#delete(java.lang.String, java.lang.String)}.
 	 */
 	@Test
-	public void testDeleteStringString() {
-		fail("Not yet implemented");
+	public void testDeleteSkill() {
+		assertTrue(EmployerCollection.delete("1", "secondSKill"));
 	}
 
 	/**
@@ -90,7 +98,7 @@ public class EmployerCollectionTest {
 	public void testGetEmployer() {
 		List<Employer> employers = EmployerCollection.getEmployers();
 		for (Employer employer : employers){
-			System.out.println(employer.getCompanyName());
+			System.out.println(employer.getCompanyName() + " " + employer.getSalary() + " " + employer.getStartDate() + " " + employer.getPosition() + "-" + employer.getSkills());
 		}
 	}
 

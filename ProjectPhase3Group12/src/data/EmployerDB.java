@@ -7,13 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-import academic.AcademicRecord;
-import academic.TransferSchool;
 import employment.Employer;
-import employment.Skill;
+
 
 /**
  * This class contains methods to access the Employer and 
@@ -28,7 +24,8 @@ public class EmployerDB {
 	private Connection mConnection;
 	
 	/**
-	 * Modifies the data on an Employer
+	 * Modifies the data on an Employer.
+	 * Restrictions: No support for studentID or employerID
 	 * 
 	 * @param Employer
 	 * @param columnName
@@ -36,13 +33,22 @@ public class EmployerDB {
 	 * @return Returns a message with success or failure.
 	 */
 	public String updateEmployer(Employer employer, String columnName, Object data) {
-
+		if (mConnection == null) {
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		String sql = "UPDATE Employer SET `" + columnName + "` = ?  WHERE employerID = ?";
 		// For debugging - System.out.println(SQL);
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = mConnection.prepareStatement(sql);
-			if (data instanceof String){
+			if (columnName.equals("startDate")) {
+				//Handle start date
+				preparedStatement.setDate(1, java.sql.Date.valueOf((String)data));
+			} else if (data instanceof String){
 				preparedStatement.setString(1, (String)data);
 			} else if (data instanceof Double){
 				//Handle Salary
@@ -66,8 +72,8 @@ public class EmployerDB {
 	 *         the sql exception.
 	 */
 	public String addEmployer(Employer employer, String studentID) {
-		String sql = "INSERT INTO Employer(studentID, startDate, position) "
-				+ "VALUES (?, ?, ?);";
+		String sql = "INSERT INTO Employer(`name`, salary, studentID, startDate, position) "
+				+ "VALUES (?, ?, ?, ?, ?);";
 
 		if (mConnection == null) {
 			try {
@@ -80,9 +86,11 @@ public class EmployerDB {
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = mConnection.prepareStatement(sql);
-			preparedStatement.setInt(1, Integer.parseInt(studentID));
-			preparedStatement.setDate(2, java.sql.Date.valueOf(employer.getStartDate()));
-			preparedStatement.setString(3, employer.getPosition());
+			preparedStatement.setString(1, employer.getCompanyName());
+			preparedStatement.setDouble(2, employer.getSalary());
+			preparedStatement.setInt(3, Integer.parseInt(studentID));
+			preparedStatement.setDate(4, java.sql.Date.valueOf(employer.getStartDate()));
+			preparedStatement.setString(5, employer.getPosition());
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -131,11 +139,13 @@ public class EmployerDB {
 			int id = rs.getInt("employerID");
 			String employerName = rs.getString("name");
 			double salary = rs.getDouble("salary");
-			SimpleDateFormat df = new SimpleDateFormat("MM.dd.yyyy");
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			String startDate = df.format(rs.getDate("startDate"));
 			String position = rs.getString("position");
 			Employer employer = new Employer (employerName, startDate);
 			employer.setID(Integer.toString(id));
+			employer.setPosition(position);
+			employer.setSalary(salary);
 			ArrayList<String> skills = getSkills(employer.getID());
 			employer.addSkill(skills);
 			employers.add(employer);
@@ -243,11 +253,19 @@ public class EmployerDB {
 	 * @param newName
 	 * 			The name that will replace the current name of the skill 
 	 * @return Returns a message with success or failure.
+	 * @throws SQLException 
 	 */
 	public String updateSkill(String employerID, String oldName, String newName) {
-
-		String sql = "UPDATE Skill SET `name` = ?  WHERE employerID = ? AND `name` = ?";
-		// For debugging - System.out.println(sql);
+		if (mConnection == null) {
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		String sql = "UPDATE Skill SET `name` = ? WHERE employerID = ? AND `name` = ?";
+		//System.out.println(sql);
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = mConnection.prepareStatement(sql);
@@ -346,7 +364,11 @@ public class EmployerDB {
 	 */
 	public ArrayList<String> getSkills() throws SQLException {
 		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		Statement stmt = null;
 		String query = "SELECT `name` FROM Skill";
@@ -432,7 +454,10 @@ public class EmployerDB {
 			preparedStatement = mConnection.prepareStatement(sql);
 			preparedStatement.setInt(1, Integer.parseInt(employerID));
 			preparedStatement.setString(2, name);
-			preparedStatement.executeUpdate();
+			int deletedRows = preparedStatement.executeUpdate();
+			if (deletedRows == 0){
+				return "Error deleting skill: Executed successfully but no rows deleted";
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return "Error deleting skill: " + e.getMessage();

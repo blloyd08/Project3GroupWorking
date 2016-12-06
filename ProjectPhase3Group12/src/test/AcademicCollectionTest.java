@@ -56,16 +56,16 @@ public class AcademicCollectionTest {
 		assertTrue(AcademicCollection.add(mRecord));
 	}
 
-	/**
-	 * Test method for {@link academic.AcademicCollection#add(academic.TransferSchool)}.
-	 */
-	@Test
-	public void testAddTransferSchool() {
-		TransferSchool school = new TransferSchool("autoTest", 1.0, "NA");
-		
-		school.setAcademicID();
-		assertTrue(AcademicCollection.add(school));
-	}
+//	/**
+//	 * Test method for {@link academic.AcademicCollection#add(academic.TransferSchool)}.
+//	 */
+//	@Test
+//	public void testAddTransferSchool() {
+//		TransferSchool school = new TransferSchool("autoTest", 1.0, "NA");
+//		
+//		school.setID();
+//		assertTrue(AcademicCollection.add(school));
+//	}
 
 	/**
 	 * Test method for {@link academic.AcademicCollection#update(academic.AcademicRecord, java.lang.String, java.lang.Object)}.
@@ -142,25 +142,25 @@ public class AcademicCollectionTest {
 		assertNotNull(school);
 	}
 	
-	/**
-	 * Gets a unique name for a category to allow successfully update or addtion of a category
-	 * @param startString string before the appened random number.
-	 * @return original string plus a random number that makes the string unique
-	 */
-	private String appendUniqueUWEmail(String startString) {
-		// Get unique name
-		Random rand = new Random();
-		int uniqueKey = rand.nextInt();
-		String uwEmail = startString + Integer.toString(uniqueKey);
-		List<AcademicRecord> records = AcademicCollection.getAcademicRecord();
-		while ((StudentCollection.searchByEmail(uwEmail)).si == true) {
-			uniqueKey = rand.nextInt();
-			categoryName = startString + Integer.toString(uniqueKey);
-			categories = ItemCollection.getCategories();
-		}
-		
-		return categoryName;
-	}
+//	/**
+//	 * Gets a unique name for a category to allow successfully update or addtion of a category
+//	 * @param startString string before the appened random number.
+//	 * @return original string plus a random number that makes the string unique
+//	 */
+//	private String appendUniqueUWEmail(String startString) {
+//		// Get unique name
+//		Random rand = new Random();
+//		int uniqueKey = rand.nextInt();
+//		String uwEmail = startString + Integer.toString(uniqueKey);
+//		List<AcademicRecord> records = AcademicCollection.getAcademicRecord();
+//		while ((StudentCollection.searchByEmail(uwEmail)).si == true) {
+//			uniqueKey = rand.nextInt();
+//			categoryName = startString + Integer.toString(uniqueKey);
+//			categories = ItemCollection.getCategories();
+//		}
+//		
+//		return categoryName;
+//	}
 //
 //	/**
 //	 * Check if a category name has already been used in a collection of ItemCategory objects
