@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
 
 import academic.AcademicCollection;
 import academic.AcademicRecord;
@@ -97,7 +96,7 @@ public class StudentDB {
 	 * @return Returns list of all students
 	 * @throws SQLException
 	 */
-	public List<Student> getStudents() throws SQLException {
+	public ArrayList<Student> getStudents() throws SQLException {
 		if (mConnection == null) {
 			try {
 				mConnection = DataConnection.getConnection();
@@ -108,7 +107,7 @@ public class StudentDB {
 		Statement stmt = null;
 		String query = "SELECT * " + "FROM Student";
 
-		List<Student> students = new ArrayList<Student>();
+		ArrayList<Student> students = new ArrayList<Student>();
 		try {
 			stmt = mConnection.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
@@ -124,8 +123,8 @@ public class StudentDB {
 		return students;
 	}
 	
-	private List<Student> buildStudent(ResultSet rs) throws SQLException{
-		List<Student> students = new ArrayList<Student>();
+	private ArrayList<Student> buildStudent(ResultSet rs) throws SQLException{
+		ArrayList<Student> students = new ArrayList<Student>();
 		while (rs.next()) {
 			int id = rs.getInt("studentID");
 			String firstName = rs.getString("firstName");
@@ -151,7 +150,7 @@ public class StudentDB {
 	 * @return Returns list of all students
 	 * @throws SQLException
 	 */
-	public List<Student> getStudents(String firstName, String lastName) throws SQLException {
+	public ArrayList<Student> getStudents(String firstName, String lastName) throws SQLException {
 		if (mConnection == null) {
 			try {
 				mConnection = DataConnection.getConnection();
@@ -162,7 +161,7 @@ public class StudentDB {
 		PreparedStatement preparedStmt = null;
 		String query = "SELECT * " + "FROM Student WHERE firstName = ? AND lastName = ?";
 
-		List<Student> students = new ArrayList<Student>();
+		ArrayList<Student> students = new ArrayList<Student>();
 		try {
 			preparedStmt = mConnection.prepareStatement(query);
 			preparedStmt.setString(1, firstName);
@@ -206,7 +205,7 @@ public class StudentDB {
 			preparedStmt.setString(1, uwEmail);
 			ResultSet rs = preparedStmt.executeQuery();
 			
-			List<Student> students = buildStudent(rs);
+			ArrayList<Student> students = buildStudent(rs);
 			if (students.size() > 0){
 				student = students.get(0);
 			}
