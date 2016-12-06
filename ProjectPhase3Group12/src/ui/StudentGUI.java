@@ -35,7 +35,6 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 	
 	private static final long serialVersionUID = -8675309L;
 	
-	private ArrayList<Employer> myEmployers;
 	private Student myStudent;
 	
 	private JButton myListButton, mySearchButton, myAddButton;
@@ -61,7 +60,7 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 	 */
 	public StudentGUI (Student theStudent) {
 		myStudent = theStudent;
-		myEmployers = EmployerCollection.getEmployers(myStudent.getStudentID());
+		//myEmployers = EmployerCollection.getEmployers(myStudent.getStudentID());
 		
 		setLayout(new BorderLayout());
 
@@ -144,7 +143,7 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == myListButton) {
-			myEmployers = EmployerCollection.getEmployers();
+			//myEmployers = EmployerCollection.getEmployers();
 			dataPanel.removeAll();
 			myTable = new JTable(mData, emploerColumnNames);
 			myTable.getModel().addTableModelListener(this);
@@ -167,7 +166,7 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 		} else if (e.getSource() == employerSearchButton) {
 			String title = employerTextField.getText();
 			if (title.length() > 0) {
-				myEmployers = EmployerCollection.getEmployers();
+				//myEmployers = EmployerCollection.getEmployers();
 				dataPanel.removeAll();
 				myTable = new JTable(mData, emploerColumnNames);
 				myTable.getModel().addTableModelListener(this);
@@ -242,8 +241,8 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 		Object data = tempModel.getValueAt(row, column);
 		
 		if (data != null && ((String) data).length() != 0) {
-			Employer tempEmployer = myEmployers.get(row);
-			if (!EmployerCollection.update(tempEmployer, columnName, data)) {
+			//Employer tempEmployer = myEmployers.get(row);
+			//if (!EmployerCollection.update(tempEmployer, columnName, data)) {
 				JOptionPane.showMessageDialog(null, "Update failed");
 			}
 		}
