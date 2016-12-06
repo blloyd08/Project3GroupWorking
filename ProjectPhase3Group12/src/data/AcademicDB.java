@@ -32,7 +32,13 @@ public class AcademicDB {
 	 * @return Returns a message with success or failure.
 	 */
 	public String updateAcademicRecord(AcademicRecord record, String columnName, Object data) {
-
+		if (mConnection == null) {
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		String sql = "UPDATE AcademicRecord SET `" + columnName + "` = ?  WHERE academicID = ?";
 		// For debugging - System.out.println(sql);
 		PreparedStatement preparedStatement = null;
@@ -104,7 +110,11 @@ public class AcademicDB {
 	 */
 	public AcademicRecord getAcademicRecord(String studentID) throws SQLException {
 		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		PreparedStatement stmt = null;
 		String query = "select * " + "from AcademicRecord where studentID = ?";
@@ -162,7 +172,11 @@ public class AcademicDB {
 	 */
 	public List<AcademicRecord> getAcademicRecord() throws SQLException {
 		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		Statement stmt = null;
 		String query = "select * " + "from AcademicRecord";
@@ -195,6 +209,13 @@ public class AcademicDB {
 	 */
 	public String updateTransferSchool(TransferSchool school, String columnName, Object data) {
 
+		if (mConnection == null) {
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		String sql = "UPDATE TransferSchool SET `" + columnName + "` = ?  WHERE transferID = ?";
 		// For debugging - System.out.println(sql);
 		PreparedStatement preparedStatement = null;
@@ -228,7 +249,11 @@ public class AcademicDB {
 	 */
 	public TransferSchool getTransferSchool(String transferID) throws SQLException {
 		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		PreparedStatement stmt = null;
 		int intTransferID = Integer.parseInt(transferID);
@@ -282,7 +307,11 @@ public class AcademicDB {
 	 */
 	public ArrayList<TransferSchool> getTransferSchools(String recordID) throws SQLException {
 		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		PreparedStatement preparedStmt = null;
 		int academicID = Integer.parseInt(recordID);
@@ -317,7 +346,11 @@ public class AcademicDB {
 	 */
 	public List<TransferSchool> getTransferSchools() throws SQLException {
 		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		Statement stmt = null;
 		String query = "SELECT * FROM TransferSchool";
