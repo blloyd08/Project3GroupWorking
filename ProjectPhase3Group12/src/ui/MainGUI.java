@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import employment.Employer;
 import student.Student;
 
 /**
@@ -34,6 +35,8 @@ public class MainGUI extends JFrame implements PropertyChangeListener {
 		UserSelectorGUI userSelector = new UserSelectorGUI();
 
 		mStudent = new Student("andrew", "klonitsko");
+		mStudent.addEmployer(new Employer("THIS", "HERE"));
+		mStudent.addEmployer(new Employer("Now", "HERE"));
 		// Display User selector GUI and listen to user selection
 		userSelector.addPropertyChangeListener(frame);
 		userSelector.setVisible(true);
