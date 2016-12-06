@@ -24,20 +24,21 @@ import academic.AcademicRecord;
 import academic.TransferSchool;
 import employment.Employer;
 import employment.EmployerCollection;
+import student.Student;
 
 /**
  * @author Andrew,Brandon,Brian
  *
  */
-public class AcademicGUI extends JFrame 
+public class AcademicGUI extends JPanel 
 implements ActionListener,TableModelListener {
 	private static final long serialVersionUID = 643323L;
-	private JButton mBtnAcademicList,mBtnAddAcademic;
+	private JButton mBtnAcademicList,mBtnAddEditAcademic, mBtnAddTrans;
 	private List<AcademicRecord> mAcademicList;
 	private List<TransferSchool> mTransferList;
-	private String mStudentID;
+	private Student mStudent;
 
-	//variables for academic table
+	//variables for transfer table
 	private String[] mAcademicStrings = {"program","degreeLevel","graduationTerm","graduationYear","uwEmail","externalEmail","GPA"};
 	private JPanel mPnlList;
 	private JPanel mTablePan;
@@ -46,6 +47,10 @@ implements ActionListener,TableModelListener {
 	private JTable mTable;
 	private JScrollPane mScrollPane;
 	private JLabel mLblAcademic,mLblTransfer;
+	
+	//variables for academic record
+	private JPanel mStudentCurrentAcademicPnl;
+	private JLabel[] mAcaRecord = new JLabel[14];
 	
 	//variables to add new academic record
 	private JPanel mPnlAdd;
@@ -57,24 +62,20 @@ implements ActionListener,TableModelListener {
 	
 	//variables for transfer table
 	private String[] mTransferStrings = {"name","GPA","degreeEarned"};
-	private JPanel mPnltransList;
-	private Object[][] mData2;
-	private JTable mTable2;
-	private JScrollPane mScrolltranPane;
 	
 	
-	//variables to add new transfer
+	//variables to add/edit new transfer
 	private JPanel mPnlAddtrans;
-	private JLabel[] txfLabeltrans = new JLabel[10];
-	private JTextField[] txfFieldtrans = new JTextField[10];
+	private JLabel[] txfLabeltrans = new JLabel[4];
+	private JTextField[] txfFieldtrans = new JTextField[4];
 	private JButton mBtnAddtrans;
 	
 	
-	public AcademicGUI(String theStudentID){
-		mStudentID = theStudentID;
+	public AcademicGUI(Student theStudent){
+		mStudent = theStudent;
 		setLayout(new BorderLayout());
-		mAcademicList = getAcadData(theStudentID); 	
-		mTransferList = getTransData();
+		//mAcademicList = getAcadData(theStudentID); 	
+		mTransferList = getTransData(theStudent);
 		createComponents();
 		setVisible(true);
 		setSize(500, 500);
@@ -85,19 +86,32 @@ implements ActionListener,TableModelListener {
 	
 
 
-	// need help with transfer school !!!!!!!!!!!!!!!!
-	private List<TransferSchool> getTransData() {
-		for(int i = 0; i< mAcademicList.size(); i++){
-		mTransferList.add(mAcademicList.get(i).getTransferSchools());
+	private List<TransferSchool> getTransData(Student theStudent) {
+		try{
+			mTransferList = theStudent.getAcademicRecord().getTransferSchools();
+		}catch(Exception e){	
+		}
+		if(mTransferList != null){
+			mData = new Object[mTransferList.size()][mTransferStrings.length];
+			for(int i = 0; i< mTransferList.size(); i++){
+				mData[i][0] = mTransferList.get(i).getName();
+				//TODO Maybe pars gpa as string
+				mData[i][1] = mTransferList.get(i).getGPA();
+				mData[i][2] = mTransferList.get(i).getName();
+			}
+			
+			
 		}
 			
+		
+		return mTransferList;
 	}
 
 
 
-	
+	//TODO Delete
 	private List<AcademicRecord> getAcadData(String theStudentID) {
-		mAcademicList = AcademicCollection.getAcademicRecord(theStudentID);
+		//mAcademicList = AcademicCollection.getAcademicRecord(theStudentID);
 
 		if(mAcademicList != null){
 			mData = new Object[mAcademicList.size()][mAcademicStrings.length];

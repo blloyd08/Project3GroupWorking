@@ -22,9 +22,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
-import academic.TransferSchool;
 import employment.Employer;
-import employment.EmployerCollection;
 import employment.Skill;
 import student.Student;
 
@@ -36,7 +34,7 @@ public class EmploymentGUI extends JPanel
 implements ActionListener,TableModelListener {
 	
 	
-	private int empId = 0;
+	private Employer emptoaddSkills;
 	private static final long serialVersionUID = 644843L;
 	private JButton mBtnEmploymentList,mBtnAdd, mBtnAddSkills;
 	private ArrayList<Employer> mEmployerList;
@@ -53,7 +51,7 @@ implements ActionListener,TableModelListener {
 	private JLabel mEmpArrayLbl,mSkillArrayLbl;
 	
 	//variables for skill table
-	private String[] mSkillColumnNames  = {"name","name"};
+	private String[] mSkillColumnNames  = {"employerName","name"};
 	private Object[][] mSkillData;
 	private JTable mSkillTable;
 	private JScrollPane mSkillScrollPane;
@@ -64,6 +62,7 @@ implements ActionListener,TableModelListener {
 	private JLabel mTxfLabelEmployerID;
 	private JLabel mTxfSkillLabel;
 	private JTextField mTxfSkill;
+	private JButton mBtnAddSkillToEmp;
 
 	//variables to add new employment
 	private JPanel mPnlAdd;
@@ -113,6 +112,7 @@ implements ActionListener,TableModelListener {
 			mData = new Object[mEmployerList.size()][mEmploymentColumnNames.length];
 			for (int i = 0; i < mEmployerList.size(); i++) {
 				mData[i][0] = mEmployerList.get(i).getCompanyName();
+				//TODO maybe need to make parse sal as string
 				mData[i][1] = mEmployerList.get(i).getSalary();
 				mData[i][2] = mEmployerList.get(i).getStartDate();
 				mData[i][3] = mEmployerList.get(i).getPosition();
@@ -140,7 +140,7 @@ implements ActionListener,TableModelListener {
 
 		mPnlButtons.add(mBtnEmploymentList);
 		mPnlButtons.add(mBtnAdd);
-		mPnlButtons.add(mBtnAdd);
+		mPnlButtons.add(mBtnAddSkills);
 
 		add(mPnlButtons, BorderLayout.NORTH);
 
@@ -207,7 +207,22 @@ implements ActionListener,TableModelListener {
 			
 			
 		}
-
+		//Add new Skill
+		mPnlAddSkill = new JPanel();
+		mTxfLabelEmployerText = new JLabel("You are adding skills to:    ");
+		mTxfLabelEmployerID= new JLabel(emptoaddSkills.getCompanyName());
+		mTxfSkillLabel= new JLabel("Add A Skill: ");;
+		mTxfSkill = new JTextField(25);
+		mBtnAddSkillToEmp = new JButton("Add Skill");
+		mBtnAddSkillToEmp.addActionListener(this);
+		mPnlAddSkill.setLayout(new GridLayout(3,2));
+		mPnlAddSkill.add(mTxfLabelEmployerText);
+		mPnlAddSkill.add(mTxfLabelEmployerID);
+		mPnlAddSkill.add(mTxfSkillLabel);
+		mPnlAddSkill.add(mTxfSkill);
+		mPnlAddSkill.add(mBtnAddSkillToEmp);
+		
+		
 		System.out.println("before add to Jpanel");
 		JPanel mPanel = new JPanel();
 		mBtnAddEmployment = new JButton("Add");
@@ -237,12 +252,38 @@ implements ActionListener,TableModelListener {
 			mPnlList.revalidate();
 			this.repaint();
 			
+		}  else if(e.getSource() == mBtnAddSkills){
+			if(emptoaddSkills.getCompanyName() != null){
+			mPnlList.removeAll();
+			mPnlList.add(mPnlAddSkill);
+			
+			mPnlList.revalidate();
+			this.repaint();}
+			else{
+				JOptionPane.showMessageDialog(null, "Select an employer from the list");
+			}
+			
 		} else if(e.getSource() == mBtnAddEmployment){
 			performAddEmployment();
+			
+		}  else if(e.getSource() == mBtnAddSkillToEmp){
+			performAddSkills();
 			
 		}
 			
 	}
+
+	private void performAddSkills() {
+		String mEmpName = mTxfSkill.getText();
+		if (mEmpName.length() == 0) {
+			JOptionPane.showMessageDialog(null, "Enter a valid skill");
+			mTxfSkill.setFocusable(true);
+			return;
+		}
+		emptoaddSkills.addSkill(mEmpName);
+		
+	}
+
 
 	private void performAddEmployment() {
 		String mEmpName = txfField[0].getText();
@@ -284,7 +325,7 @@ implements ActionListener,TableModelListener {
 			return;
 		}
 		
-		String mDate = mMonth + "/" + mDay + "/" + mYear; 
+		String mDate = mYear + "-" + mMonth + "-" + mDay; 
 		
 		
 	
@@ -328,6 +369,7 @@ implements ActionListener,TableModelListener {
 			
 			try{
 			Employer item = mEmployerList.get(row);
+			emptoaddSkills = item;
 			if (columnName == "name") {
 				mStudent.getEmployer(item.getID()).setCompanyName((String)data);
 			}
