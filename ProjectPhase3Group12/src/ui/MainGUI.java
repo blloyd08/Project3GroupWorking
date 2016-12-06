@@ -12,7 +12,11 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+
+import student.Student;
 
 /**
  * @author Andrew,Brandon,Brian
@@ -23,12 +27,13 @@ public class MainGUI extends JFrame implements PropertyChangeListener {
 
 	private static final long serialVersionUID = 1L;
 	private JTabbedPane myTabbedPane;
+	private static Student mStudent;
 
 	public static void main(String[] args) {
 		MainGUI frame = new MainGUI();
 		UserSelectorGUI userSelector = new UserSelectorGUI();
 
-		System.out.println("hello brain");
+		mStudent = new Student("naere","klonitsko");
 		// Display User selector GUI and listen to user selection
 		userSelector.addPropertyChangeListener(frame);
 		userSelector.setVisible(true);
@@ -83,7 +88,16 @@ public class MainGUI extends JFrame implements PropertyChangeListener {
 
 	private JComponent makeTextPanel(String type) {
 
-		return null;
+		JPanel panel = new JPanel();
+		if (type.equalsIgnoreCase("Employment")){
+			panel.add(new EmploymentGUI(mStudent));
+			System.out.println("after panel add");
+		}else {
+			panel.add(new JLabel("Needs to be implemented!"));
+		}
+		
+		
+		return panel;
 	}
 
 	@Override
