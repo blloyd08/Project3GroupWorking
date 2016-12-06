@@ -25,6 +25,7 @@ public class Student extends Observable {
 	public static final String EMPLOYERS = "EMPLOYERS";
 	
 	private String myID;
+	private String myStudentID;
 	private String myFirstName;
 	private String myLastName;
 	private AcademicRecord myAcademicRecord;
@@ -39,7 +40,7 @@ public class Student extends Observable {
 	 * @param theEmployers for any employers the student already has.
 	 */
 	public Student(String theStudentID, String theFirstName, String theLastName, AcademicRecord theRecord, ArrayList<Employer> theEmployers) {
-		myID = theStudentID;
+		setStudentID(theStudentID);
 		myFirstName = theFirstName;
 		myLastName = theLastName;
 		myAcademicRecord = theRecord;
@@ -103,6 +104,14 @@ public class Student extends Observable {
 			return flag;
 	}
 	
+	public String getStudentID() {
+		return myStudentID;
+	}
+
+	public void setStudentID(String theStudentID) {
+		this.myStudentID = theStudentID;
+	}
+
 	public String getFirstName() {
 		return myFirstName;
 	}

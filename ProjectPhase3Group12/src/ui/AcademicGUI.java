@@ -8,6 +8,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -32,7 +34,8 @@ import student.Student;
  *
  */
 public class AcademicGUI extends JPanel 
-implements ActionListener,TableModelListener {
+implements ActionListener,TableModelListener, Observer {
+	
 	private static final long serialVersionUID = 643323L;
 	private JButton mBtnAcademicList,mBtnAddEditAcademic, mBtnAddTrans;
 	private List<AcademicRecord> mAcademicList;
@@ -394,8 +397,10 @@ private JPanel createAcaPnl() {
 		}
 		
 		//Adding To the collection
+		//Is this what you wanted here Andrew?
 		AcademicRecord mAC;
-		mAC = new AcademicRecord(mprogram,mDegreeLvl ,mGradTerm,mGradYear,muwEmail, mexEmail,mGPADO);
+		mAC = new AcademicRecord(mStudent.getStudentID(), mprogram, mDegreeLvl, 
+				mGradTerm, mGradYear, muwEmail, mexEmail, mGPADO, null);
 		
 		
 		String message = "Employer add failed";
@@ -404,6 +409,16 @@ private JPanel createAcaPnl() {
 		}
 		JOptionPane.showMessageDialog(null, message);
 
+	}
+
+
+
+
+
+	@Override
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	
