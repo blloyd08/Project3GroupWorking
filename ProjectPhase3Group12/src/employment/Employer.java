@@ -11,6 +11,7 @@ import java.util.Observable;
  *
  */
 public class Employer extends Observable {
+	
 	private String myID;
 	private String myCompanyName;
 	private String myStartDate;
