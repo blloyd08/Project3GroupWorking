@@ -8,10 +8,9 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.List;
+
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -22,10 +21,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
-import academic.TransferSchool;
 import employment.Employer;
-import employment.EmployerCollection;
-import employment.Skill;
 import student.Student;
 
 /**
@@ -35,14 +31,14 @@ import student.Student;
 public class EmploymentGUI extends JPanel 
 implements ActionListener,TableModelListener {
 	
-	
-	private int empId = 0;
+	//Variables that are used in every Panel
+	private Employer emptoaddSkills;
 	private static final long serialVersionUID = 644843L;
 	private JButton mBtnEmploymentList,mBtnAdd, mBtnAddSkills;
 	private ArrayList<Employer> mEmployerList;
 	private Student mStudent;
 
-	//variables for emp. table
+	//variables for employer table
 	private String[] mEmploymentColumnNames = {"name","salary","startDate","position"};
 	private JPanel mPnlList;
 	private JPanel mPnlBothList;
@@ -50,10 +46,9 @@ implements ActionListener,TableModelListener {
 	private Object[][] mData;
 	private JTable mTable;
 	private JScrollPane mScrollPane;
-	private JLabel mEmpArrayLbl,mSkillArrayLbl;
 	
 	//variables for skill table
-	private String[] mSkillColumnNames  = {"name","name"};
+	private String[] mSkillColumnNames  = {"employerName","skills"};
 	private Object[][] mSkillData;
 	private JTable mSkillTable;
 	private JScrollPane mSkillScrollPane;
@@ -64,6 +59,7 @@ implements ActionListener,TableModelListener {
 	private JLabel mTxfLabelEmployerID;
 	private JLabel mTxfSkillLabel;
 	private JTextField mTxfSkill;
+	private JButton mBtnAddSkillToEmp;
 
 	//variables to add new employment
 	private JPanel mPnlAdd;
@@ -72,6 +68,12 @@ implements ActionListener,TableModelListener {
 	private JButton mBtnAddEmployment;
 
 
+	/**
+	 * 
+	 * Constructor this creates a JPanel that can be used for employment
+	 * 
+	 * @param Student object
+	 */
 	public EmploymentGUI(Student theStudent){
 		mStudent = theStudent;
 		setLayout(new BorderLayout());
@@ -85,7 +87,11 @@ implements ActionListener,TableModelListener {
 		setSize(500, 500);
 	}
 
-
+	/**
+	 * 
+	 * Sets up the skill data matrix to be use for the Table later
+	 * 
+	 */
 	private void getSkillData() {
 		int i = 0;
 		mSkillData= new Object[25][2];
@@ -97,22 +103,31 @@ implements ActionListener,TableModelListener {
 				mSkillData[i][1]= skill;
 				i++;
 			}
-			
+			i++;
 		}
 		
 	}
 
-
+	/**
+	 * 
+	 * Sets up the employer list to be use for table later
+	 * 
+	 * @param Student object
+	 * @return ArrayList<Employer> 
+	 */
 	private ArrayList<Employer> getData(Student theStudent) {
-		System.out.println("made it here1");
+		
 		try{
 		mEmployerList = theStudent.getEmployers();
+		
 		}catch(Exception e){}
+		//This populates the employer matrices all well as sets the employer to add skills to as the first one in the list
 		if(mEmployerList != null){
-			
+			emptoaddSkills = mEmployerList.get(0);
 			mData = new Object[mEmployerList.size()][mEmploymentColumnNames.length];
 			for (int i = 0; i < mEmployerList.size(); i++) {
 				mData[i][0] = mEmployerList.get(i).getCompanyName();
+				//TODO maybe need to make parse sal as string
 				mData[i][1] = mEmployerList.get(i).getSalary();
 				mData[i][2] = mEmployerList.get(i).getStartDate();
 				mData[i][3] = mEmployerList.get(i).getPosition();
@@ -123,7 +138,11 @@ implements ActionListener,TableModelListener {
 		return mEmployerList;
 	}
 
-
+	/* 
+	 * Sets up all the components for all of the panels to start off with some panels are reused later
+	 * 
+	 * 
+	 */
 	private void createComponents() {
 
 		// The Top Most Panel That Allows Adding Employer and Listing Employer
@@ -140,7 +159,7 @@ implements ActionListener,TableModelListener {
 
 		mPnlButtons.add(mBtnEmploymentList);
 		mPnlButtons.add(mBtnAdd);
-		mPnlButtons.add(mBtnAdd);
+		mPnlButtons.add(mBtnAddSkills);
 
 		add(mPnlButtons, BorderLayout.NORTH);
 
@@ -149,29 +168,23 @@ implements ActionListener,TableModelListener {
 		
 		//create a panel for center of main panel
 		mPnlBothList = new JPanel(new GridLayout(2,0));
-		//mEmpArrayLbl = new JLabel("Employers:");
 		mTable = new JTable(mData,mEmploymentColumnNames);
-		
 		mScrollPane = new JScrollPane(mTable);
-	
-		//mPnlBothList.add(mEmpArrayLbl);
 		mPnlBothList.add(mScrollPane);
 		mTable.getModel().addTableModelListener(this);
 	
-		//mSkillArrayLbl = new JLabel("Skills:");
 		mSkillTable = new JTable(mSkillData,mSkillColumnNames);
 		mSkillScrollPane = new JScrollPane(mSkillTable);
-		//mPnlBothList.add(mSkillArrayLbl);
 		mPnlBothList.add(mSkillScrollPane);
 		
 		mPnlList.add(mPnlBothList);
-		System.out.println("after center panel");
+		
 		//Add Panel- allows input to add a new employer
 		mPnlAdd = new JPanel();
 		mPnlAdd.setLayout(new GridLayout(0,1));
 		String mLabelName[] = {"Enter Employer Name:","Enter Salary:","Enter Start Date:","Enter Position:"};
 
-		System.out.println("before for loop");
+		//creates text labels and fields for adding employer
 		for (int i = 0; i < mLabelName.length; i++) {
 			JPanel panel = new JPanel();
 			;
@@ -207,21 +220,35 @@ implements ActionListener,TableModelListener {
 			
 			
 		}
-
-		System.out.println("before add to Jpanel");
+		//Add new Skill
+		mPnlAddSkill = new JPanel();
+		mTxfLabelEmployerText = new JLabel("You are adding skills to:    ");
+		
+		mTxfLabelEmployerID= new JLabel(emptoaddSkills.getCompanyName());
+		mTxfSkillLabel= new JLabel("Add A Skill: ");;
+		mTxfSkill = new JTextField(8);
+		mBtnAddSkillToEmp = new JButton("Add Skill");
+		mBtnAddSkillToEmp.addActionListener(this);
+		mPnlAddSkill.setLayout(new GridLayout(3,2));
+		mPnlAddSkill.add(mTxfLabelEmployerText);
+		mPnlAddSkill.add(mTxfLabelEmployerID);
+		mPnlAddSkill.add(mTxfSkillLabel);
+		mPnlAddSkill.add(mTxfSkill);
+		mPnlAddSkill.add(mBtnAddSkillToEmp);
+		
+		
 		JPanel mPanel = new JPanel();
 		mBtnAddEmployment = new JButton("Add");
 		mBtnAddEmployment.addActionListener(this);
 		mPanel.add(mBtnAddEmployment);
 		mPnlAdd.add(mPanel);
-		System.out.println("after add to Jpanel");
 		add(mPnlList,BorderLayout.CENTER);
 	}
 
+	//Checks to determine what object was clicked on the panels
 	@Override
 	public void actionPerformed(ActionEvent e) {
 	
-		
 		if(e.getSource() == mBtnEmploymentList){
 			mEmployerList = getData(mStudent);
 			mPnlList.removeAll();
@@ -237,13 +264,62 @@ implements ActionListener,TableModelListener {
 			mPnlList.revalidate();
 			this.repaint();
 			
+		}  else if(e.getSource() == mBtnAddSkills){
+			
+			if(emptoaddSkills.getCompanyName() != null){
+			mPnlList.removeAll();
+			mPnlAddSkill = new JPanel();
+			mTxfLabelEmployerText = new JLabel("You are adding skills to:    ");
+			
+			mTxfLabelEmployerID= new JLabel(emptoaddSkills.getCompanyName());
+			mTxfSkillLabel= new JLabel("Add A Skill: ");;
+			mTxfSkill = new JTextField(8);
+			mBtnAddSkillToEmp = new JButton("Add Skill");
+			mBtnAddSkillToEmp.addActionListener(this);
+			mPnlAddSkill.setLayout(new GridLayout(3,2));
+			mPnlAddSkill.add(mTxfLabelEmployerText);
+			mPnlAddSkill.add(mTxfLabelEmployerID);
+			mPnlAddSkill.add(mTxfSkillLabel);
+			mPnlAddSkill.add(mTxfSkill);
+			mPnlAddSkill.add(mBtnAddSkillToEmp);
+			mPnlList.add(mPnlAddSkill);
+			mPnlList.revalidate();
+			this.repaint();}
+			else{
+				JOptionPane.showMessageDialog(null, "Select an employer from the list");
+			}
+			
+			
 		} else if(e.getSource() == mBtnAddEmployment){
 			performAddEmployment();
+			
+		}  else if(e.getSource() == mBtnAddSkillToEmp){
+			performAddSkills();
 			
 		}
 			
 	}
+	 /* 
+	 * When the add skills button is clicked, this adds a skill depending on what employer was selected
+	 * 
+	 *
+	 */
+	private void performAddSkills() {
+		String mEmpName = mTxfSkill.getText();
+		if (mEmpName.length() == 0) {
+			JOptionPane.showMessageDialog(null, "Enter a valid skill");
+			mTxfSkill.setFocusable(true);
+			return;
+		}
+		emptoaddSkills.addSkill(mEmpName);
+		
+	}
 
+	 /* 
+		 * When the add Employment button is clicked, this adds a Employer using the textfields
+		 * 
+		 *
+		 */
 	private void performAddEmployment() {
 		String mEmpName = txfField[0].getText();
 		if (mEmpName.length() == 0) {
@@ -263,8 +339,6 @@ implements ActionListener,TableModelListener {
 				return;
 			}
 		}
-		
-		
 		String mMonth = txfField[6].getText();
 		if (mMonth.length() != 2) {
 			JOptionPane.showMessageDialog(null, "Enter Month As mm");
@@ -284,7 +358,7 @@ implements ActionListener,TableModelListener {
 			return;
 		}
 		
-		String mDate = mMonth + "/" + mDay + "/" + mYear; 
+		String mDate = mYear + "-" + mMonth + "-" + mDay; 
 		
 		
 	
@@ -315,7 +389,7 @@ implements ActionListener,TableModelListener {
 		
 	}
 
-
+	//This is called when the a cell is doubled clicked and enter is pressed. 
 	@Override
 	public void tableChanged(TableModelEvent e) {
 		// TODO Auto-generated method stub
@@ -324,10 +398,12 @@ implements ActionListener,TableModelListener {
 		TableModel model = (TableModel) e.getSource();
 		String columnName = model.getColumnName(column);
 		Object data = model.getValueAt(row, column);
+		System.out.println(mEmployerList.get(row).getCompanyName());
 		if (data != null && ((String) data).length() != 0) {
 			
 			try{
 			Employer item = mEmployerList.get(row);
+			emptoaddSkills = item;
 			if (columnName == "name") {
 				mStudent.getEmployer(item.getID()).setCompanyName((String)data);
 			}

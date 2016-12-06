@@ -32,13 +32,13 @@ public class EmployerCollection {
 
 		String message = mEmployerDB.addEmployer(employer, studentID);
 
-		if (message.startsWith("Error adding employer:")) {
+		if (message.startsWith("Error adding employer: ")) {
 			return false;
 		}
 
 		// Add employer skills
 		List<String> skills = employer.getSkills();
-		if (skills != null || skills.size() > 0) {
+		if (skills != null && skills.size() > 0) {
 			for (String skill : skills) {
 				if (!EmployerCollection.add(employer.getID(), skill)) {
 					return false;
@@ -84,6 +84,12 @@ public class EmployerCollection {
 		if (mEmployerDB == null) {
 			mEmployerDB = new EmployerDB();
 		}
+		
+		if (employer.getID() == null){
+			System.err.println("Employer ID is null");
+			return false;
+		}
+		
 		String message = mEmployerDB.updateEmployer(employer, column, data);
 		if (message.startsWith("Error updating employer: ")) {
 			return false;
@@ -113,39 +119,7 @@ public class EmployerCollection {
 		return true;
 	}
 
-	/**
-	 * Deletes the particular employer and all skill related to the employer
-	 * 
-	 * @param employer
-	 *            Employer to be delete
-	 * @return true or false
-	 */
-	public static boolean delete(Employer employer) {
-		if (mEmployerDB == null) {
-			mEmployerDB = new EmployerDB();
-		}
 
-		// Handle no employer or no ID
-		if (employer == null || employer.getID() == null) {
-			return false;
-		}
-		
-		//Handle deleting related skills
-		List<String> skills = employer.getSkills();
-		if (skills != null && skills.size() > 0){
-			for (String skill : skills){
-				if (!EmployerCollection.delete(employer.getID(), skill)){
-					return false;
-				}
-			}
-		}
-		
-		String message = mEmployerDB.deleteEmployer(employer);
-		if (message.startsWith("Error deleting employer: ")) {
-			return false;
-		}
-		return true;
-	}
 	
 	/**
 	 * Deletes the particular skill from the database
