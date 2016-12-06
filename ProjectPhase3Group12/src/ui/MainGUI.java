@@ -33,7 +33,7 @@ public class MainGUI extends JFrame implements PropertyChangeListener {
 		MainGUI frame = new MainGUI();
 		UserSelectorGUI userSelector = new UserSelectorGUI();
 
-		mStudent = new Student("naere","klonitsko");
+		mStudent = new Student("andrew", "klonitsko");
 		// Display User selector GUI and listen to user selection
 		userSelector.addPropertyChangeListener(frame);
 		userSelector.setVisible(true);
