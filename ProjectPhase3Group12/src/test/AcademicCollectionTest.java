@@ -5,6 +5,7 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -45,7 +46,7 @@ public class AcademicCollectionTest {
 		StudentCollection.add(new Student("autoTestFirst", "autoTestLast"));
 		mStudent = createStudent();
 		mRecord = new AcademicRecord(mStudent.getID(),"autoTestProgram","autoTestDegree","autoTestTerm",
-				"1999","autoTest@uw.edu", "autotest@autotext.com", 2.01);
+				"1999","autoTest@uw.edu", "autotest@autotext.com", 2.01, new ArrayList<TransferSchool>());
 	}
 
 	/**

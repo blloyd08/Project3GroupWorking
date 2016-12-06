@@ -44,10 +44,6 @@ public class Employer extends Observable {
 		mySalary = theSalary;
 		myPosition = thePosition;
 		mySkillsList = theSkills;
-		this.setCompanyName(theCompanyName);
-		this.setStartDate(theStartDate);
-		this.setSalary(theSalary);
-		this.setPosition(thePosition);
 	}
 	
 	/**
