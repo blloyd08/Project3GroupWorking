@@ -5,6 +5,7 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -44,8 +45,8 @@ public class AcademicCollectionTest {
 	public void setUp() throws Exception {
 		StudentCollection.add(new Student("autoTestFirst", "autoTestLast"));
 		mStudent = createStudent();
-		mRecord = new AcademicRecord(mStudent.getID(),"autoTestProgram","autoTestDegree","autoTestTerm",
-				"1999","autoTest@uw.edu", "autotest@autotext.com", 2.01);
+		//mRecord = new AcademicRecord(mStudent.getID(),"autoTestProgram","autoTestDegree","autoTestTerm",
+		//		"1999","autoTest@uw.edu", "autotest@autotext.com", 2.01, new ArrayList<TransferSchool>());
 	}
 
 	/**
@@ -53,26 +54,27 @@ public class AcademicCollectionTest {
 	 */
 	@Test
 	public void testAddAcademicRecord() {
-		assertTrue(AcademicCollection.add(mRecord));
+		
+		assertTrue(AcademicCollection.add(new AcademicRecord("", "2", "Program", "degree", "graduationTerm", "year",
+				"UwTestEmail", "external", 4.0, new ArrayList<TransferSchool>())));
 	}
 
-//	/**
-//	 * Test method for {@link academic.AcademicCollection#add(academic.TransferSchool)}.
-//	 */
-//	@Test
-//	public void testAddTransferSchool() {
-//		TransferSchool school = new TransferSchool("autoTest", 1.0, "NA");
-//		
-//		school.setID();
-//		assertTrue(AcademicCollection.add(school));
-//	}
+	/**
+	 * Test method for {@link academic.AcademicCollection#add(academic.TransferSchool)}.
+	 */
+	@Test
+	public void testAddTransferSchool() {
+		TransferSchool school = new TransferSchool("", "3", "autoTest", 1.0, "NA");
+		assertTrue(AcademicCollection.add(school));
+	}
 
 	/**
 	 * Test method for {@link academic.AcademicCollection#update(academic.AcademicRecord, java.lang.String, java.lang.Object)}.
 	 */
 	@Test
 	public void testUpdateAcademicRecordStringObject() {
-		fail("Not yet implemented");
+		assertTrue(AcademicCollection.update(new AcademicRecord("3", "2", "Program", "degree", "graduationTerm", "year",
+				"UwTestEmail", "external", 4.0, new ArrayList<TransferSchool>()) , "GPA", 3.5));
 	}
 
 	/**
@@ -80,14 +82,15 @@ public class AcademicCollectionTest {
 	 */
 	@Test
 	public void testUpdateTransferSchoolStringObject() {
-		fail("Not yet implemented");
+		TransferSchool school = new TransferSchool("8", "3", "autoTest", 1.0, "NA");
+		assertTrue(AcademicCollection.update(school, "name", "updated"));
 	}
 
 	/**
 	 * Test method for {@link academic.AcademicCollection#getAcademicRecord(java.lang.String)}.
 	 */
 	@Test
-	public void testGetAcademicRecordString() {
+	public void testGetAcademicRecordByStudentID() {
 		AcademicRecord record = AcademicCollection.getAcademicRecord("1");
 		System.out.println(record.getID() + " " + record.getStudentID() + " " + record.getProgram() + " " + record.getGPA() + " " + record.getTransferSchools());
 		assertNotNull(record);
@@ -109,7 +112,7 @@ public class AcademicCollectionTest {
 	 * Test method for {@link academic.AcademicCollection#getTransferSchools(java.lang.String)}.
 	 */
 	@Test
-	public void testGetTransferSchoolsString() {
+	public void testGetTransferSchoolsByAcademicID() {
 		List<TransferSchool> schools = AcademicCollection.getTransferSchools("1");
 		for (TransferSchool school : schools){
 			//Debug
@@ -131,16 +134,16 @@ public class AcademicCollectionTest {
 		assertNotNull(schools);
 	}
 
-	/**
-	 * Test method for {@link academic.AcademicCollection#getTransferSchool(java.lang.String)}.
-	 */
-	@Test
-	public void testGetTransferSchool() {
-		TransferSchool school = AcademicCollection.getTransferSchool("1");
-		//Debug
-		System.out.println(school.getID() + " " + school.getAcademicID() + " " + school.getName() + " " + school.getGPA());
-		assertNotNull(school);
-	}
+//	/**
+//	 * Test method for {@link academic.AcademicCollection#getTransferSchool(java.lang.String)}.
+//	 */
+//	@Test
+//	public void testGetTransferSchool() {
+//		TransferSchool school = AcademicCollection.getTransferSchool("1");
+//		//Debug
+//		System.out.println(school.getID() + " " + school.getAcademicID() + " " + school.getName() + " " + school.getGPA());
+//		assertNotNull(school);
+//	}
 	
 //	/**
 //	 * Gets a unique name for a category to allow successfully update or addtion of a category

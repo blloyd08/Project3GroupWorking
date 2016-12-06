@@ -5,7 +5,6 @@ package student;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 import data.StudentDB;
 
@@ -26,8 +25,8 @@ public class StudentCollection {
 	 * 				last name of student
 	 * @return a list of students that match
 	 */
-	public static List<Student> searchByName(String firstName, String lastName) {
-		List<Student> list = new ArrayList<Student>();
+	public static ArrayList<Student> searchByName(String firstName, String lastName) {
+		ArrayList<Student> list = new ArrayList<Student>();
 		if (mStudentDB == null) {
 			mStudentDB = new StudentDB();
 		}
@@ -104,7 +103,7 @@ public class StudentCollection {
 	 * 
 	 * @return Student
 	 */
-	public static List<Student> getStudents() {
+	public static ArrayList<Student> getStudents() {
 		if (mStudentDB == null) {
 			mStudentDB = new StudentDB();
 		}

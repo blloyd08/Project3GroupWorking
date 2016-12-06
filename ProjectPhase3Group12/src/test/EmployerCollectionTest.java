@@ -5,6 +5,7 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -32,8 +33,7 @@ public class EmployerCollectionTest {
 	 */
 	@Test
 	public void testAddEmployerString() {
-		Employer newEmp = new Employer("Name","2000-01-23");
-		newEmp.setPosition("newPos");
+		Employer newEmp = new Employer("Name12","2000-01-23");
 		assertTrue(EmployerCollection.add(newEmp, "4"));
 		
 	}
@@ -43,7 +43,7 @@ public class EmployerCollectionTest {
 	 */
 	@Test
 	public void testAddSkill() {
-		assertTrue(EmployerCollection.add("2", "NewSkill"));
+		assertTrue(EmployerCollection.add("2", "New2Skill"));
 	}
 
 	/**
@@ -51,8 +51,7 @@ public class EmployerCollectionTest {
 	 */
 	@Test
 	public void testUpdateEmployerStringObject() {
-		Employer testEmployer = new Employer("Test2","2011-12-15", 0.00, "firstPosition");
-		testEmployer.setID("2");
+		Employer testEmployer = new Employer("5","Test32","2011-12-15", 0.00, "firstPosition", new ArrayList<String>());
 		//assertTrue(EmployerCollection.update(testEmployer, "name", (Object)"NewName"));
 		//assertTrue(EmployerCollection.update(testEmployer, "salary", (Object)1.0));
 		//assertTrue(EmployerCollection.update(testEmployer, "startDate", (Object)"2016-12-13"));
@@ -64,15 +63,7 @@ public class EmployerCollectionTest {
 	 */
 	@Test
 	public void testUpdateSkill() {
-		assertTrue(EmployerCollection.update("2", "NewSkill", "NewerSkill"));
-	}
-
-	/**
-	 * Test method for {@link employment.EmployerCollection#delete(employment.Employer)}.
-	 */
-	@Test
-	public void testDeleteEmployer() {
-		fail("Not yet implemented");
+		assertTrue(EmployerCollection.update("2", "NewerSkill", "NewSkill"));
 	}
 
 	/**
@@ -80,7 +71,7 @@ public class EmployerCollectionTest {
 	 */
 	@Test
 	public void testDeleteSkill() {
-		assertTrue(EmployerCollection.delete("1", "secondSKill"));
+		assertTrue(EmployerCollection.delete("2", "NewSkill"));
 	}
 
 	/**
@@ -88,7 +79,7 @@ public class EmployerCollectionTest {
 	 */
 	@Test
 	public void testGetEmployersString() {
-		fail("Not yet implemented");
+		assertNotNull(EmployerCollection.getEmployer("2"));
 	}
 
 	/**

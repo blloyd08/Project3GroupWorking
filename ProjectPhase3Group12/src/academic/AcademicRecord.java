@@ -5,7 +5,6 @@ Brandon Gibbons
 package academic;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -36,10 +35,8 @@ public class AcademicRecord extends Observable {
 	private double myGPA;
 	private ArrayList<TransferSchool> myTransferSchools;
 	
-	public AcademicRecord(String theAcademicID, String theStudentID, String theProgram,
-			String theDegreeLevel, String theGraduationTerm, String theGraduationYear,
-			String theUWEmail, String theExternalEmail, double theGPA,
-			ArrayList<TransferSchool> theTransferSchools) {
+	public AcademicRecord(String theAcademicID, String theStudentID, String theProgram, String theDegreeLevel, String theGraduationTerm, 
+			String theGraduationYear, String theUWEmail, String theExternalEmail, double theGPA, ArrayList<TransferSchool> theTransferSchools) {
 		
 		myID = theAcademicID;
 		myStudentID = theStudentID;
