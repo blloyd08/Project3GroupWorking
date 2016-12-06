@@ -109,7 +109,11 @@ public class EmployerDB {
 	 */
 	public ArrayList<Employer> getEmployers(String studentID) throws SQLException {
 		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		ArrayList<Employer> employers = new ArrayList<Employer>();
 		PreparedStatement stmt = null;
@@ -161,7 +165,11 @@ public class EmployerDB {
 	 */
 	public Employer getEmployer(String employerID) throws SQLException {
 		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		Employer employer = null;
 		PreparedStatement stmt = null;
@@ -195,7 +203,11 @@ public class EmployerDB {
 	 */
 	public ArrayList<Employer> getEmployers() throws SQLException {
 		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		Statement stmt = null;
 		String query = "SELECT * from Employer";
@@ -266,7 +278,11 @@ public class EmployerDB {
 	 */
 	public ArrayList<String> getSkills(String employerID) throws SQLException {
 		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		PreparedStatement preparedStmt = null;
 		int intEmployerID = Integer.parseInt(employerID);

@@ -36,6 +36,13 @@ public class StudentDB {
 	 */
 	public String updateStudent(Student student, String columnName, String data) {
 
+		if (mConnection == null) {
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		String sql = "UPDATE Student SET `" + columnName + "` = ?  WHERE studentID = ?";
 		// For debugging - System.out.println(sql);
 		PreparedStatement preparedStatement = null;
@@ -92,7 +99,11 @@ public class StudentDB {
 	 */
 	public List<Student> getStudents() throws SQLException {
 		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		Statement stmt = null;
 		String query = "SELECT * " + "FROM Student";
@@ -142,7 +153,11 @@ public class StudentDB {
 	 */
 	public List<Student> getStudents(String firstName, String lastName) throws SQLException {
 		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		PreparedStatement preparedStmt = null;
 		String query = "SELECT * " + "FROM Student WHERE firstName = ? AND lastName = ?";
@@ -176,7 +191,11 @@ public class StudentDB {
 	 */
 	public Student getStudent(String uwEmail) throws SQLException {
 		if (mConnection == null) {
-			mConnection = DataConnection.getConnection();
+			try {
+				mConnection = DataConnection.getConnection();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		PreparedStatement preparedStmt = null;
 		String query = "SELECT Student.*, uwEmail FROM Student JOIN AcademicRecord ON Student.studentID = AcademicRecord.studentID WHERE uwEmail = ? ";
