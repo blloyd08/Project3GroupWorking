@@ -328,6 +328,41 @@ private JPanel createAcaPnl() {
 	private void performAddTransfer() {
 		// TODO Auto-generated method stub
 		
+		String mprogram = txfFieldtrans[0].getText();
+		if (mprogram.length() == 0) {
+			JOptionPane.showMessageDialog(null, "Enter a school name");
+			txfFieldtrans[0].setFocusable(true);
+			return;
+		}
+		String mGPA = txfFieldtrans[1].getText();
+		double mGPADO = 0.0;
+		if (mGPA.length() != 0) {
+			try {
+				mGPADO = Double.parseDouble(mGPA);
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(null, "Enter GPA as decimal");
+				txfFieldtrans[1].setText("");
+				txfFieldtrans[1].setFocusable(true);
+				return;
+			}
+		}
+		String mDegreeLvl = txfFieldtrans[2].getText();
+		if (mDegreeLvl.length() == 0) {
+			JOptionPane.showMessageDialog(null, "Enter a Degree Level");
+			txfFieldtrans[2].setFocusable(true);
+			return;
+		}
+		
+		//Adding To the collection
+		AcademicRecord mAC = mStudent.getAcademicRecord();
+		TransferSchool mTF = new TransferSchool("0",mAC.getID(),mprogram,mGPADO,mDegreeLvl);
+		mAC.addTransferSchool(mTF);
+		
+		String message = "Transfer School add failed";
+		if (mStudent.addAcademicRecord(mAC)) {
+			message = "School added";
+		}
+		JOptionPane.showMessageDialog(null, message);
 		
 		
 	}
