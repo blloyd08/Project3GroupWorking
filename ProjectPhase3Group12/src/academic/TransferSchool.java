@@ -23,10 +23,13 @@ public class TransferSchool extends Observable {
 	private String myDegreeEarned;
 	
 	
-	public TransferSchool(String theName, double theGPA, String theDegreeEarned){
-		this.setName(theName);
-		this.setGPA(theGPA);
-		this.setDegreeEarned(theDegreeEarned);
+	public TransferSchool(String theTransferID, String theAcademicID, String theName,
+			double theGPA, String theDegreeEarned){
+		myID = theTransferID;
+		myAcademicID = theAcademicID;
+		myName = theName;
+		myGPA = theGPA;
+		myDegreeEarned = theDegreeEarned;
 	}
 	
 	public String getName() {

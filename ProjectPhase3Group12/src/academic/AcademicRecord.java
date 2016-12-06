@@ -36,8 +36,25 @@ public class AcademicRecord extends Observable {
 	private double myGPA;
 	private ArrayList<TransferSchool> myTransferSchools;
 	
+	public AcademicRecord(String theAcademicID, String theStudentID, String theProgram,
+			String theDegreeLevel, String theGraduationTerm, String theGraduationYear,
+			String theUWEmail, String theExternalEmail, double theGPA,
+			ArrayList<TransferSchool> theTransferSchools) {
+		
+		myID = theAcademicID;
+		myStudentID = theStudentID;
+		myProgram = theProgram;
+		myDegreeLevel = theDegreeLevel;
+		myGraduationTerm = theGraduationTerm;
+		myGraduationYear = theGraduationYear;
+		myUWEmail = theUWEmail;
+		myExternalEmail = theExternalEmail;
+		myGPA = theGPA;
+		myTransferSchools = theTransferSchools;
+	}
+	
 	public AcademicRecord(String theStudentID, String theProgram, String theDegreeLevel, String theGraduationTerm, String theGraduationYear,
-			String theUWEmail, String myExternalEmail, double theGPA) {
+			String theUWEmail, String theExternalEmail, double theGPA, ArrayList<TransferSchool> thePreviousSchools){
 		this.setStudentID(theStudentID);
 		this.setProgram(theProgram);
 		this.setDegreeLevel(theDegreeLevel);
@@ -47,20 +64,7 @@ public class AcademicRecord extends Observable {
 		this.setExternalEmail(myExternalEmail);
 		this.setGPA(theGPA);
 		
-		myTransferSchools = new ArrayList<TransferSchool>();
-	}
-	
-	public AcademicRecord(String studentID, String theProgram, String theDegreeLevel, String theGraduationTerm, String theGraduationYear,
-			String theUWEmail, String theExternalEmail, double theGPA, ArrayList<TransferSchool> thePreviousSchools){
-		
-		//Chained Constructor
-		this(studentID, theProgram, theDegreeLevel, theGraduationTerm, theGraduationYear,
-			theUWEmail, theExternalEmail,theGPA);
-		
-		myTransferSchools = new ArrayList<TransferSchool>();
-		for(TransferSchool t : thePreviousSchools) {
-			myTransferSchools.add(t);
-		}
+		myTransferSchools = thePreviousSchools;
 	}
 	
 	public String getID() {
@@ -159,7 +163,7 @@ public class AcademicRecord extends Observable {
 		notifyObservers(GPA);
 	}
 
-	public List<TransferSchool> getTransferSchools() {
+	public ArrayList<TransferSchool> getTransferSchools() {
 		return myTransferSchools;
 	}
 	
