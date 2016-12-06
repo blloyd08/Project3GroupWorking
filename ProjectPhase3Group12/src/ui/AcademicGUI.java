@@ -181,7 +181,7 @@ implements ActionListener,TableModelListener, Observer {
 				
 				mBtnAddAcad = new JButton("Add/Edit Academic Info:");
 				mBtnAddAcad.addActionListener(this);
-				mPnlAdd.add(mPnlAcademic);
+				mPnlAdd.add(createEditAcaPnl());
 				mPnlAdd.add(mBtnAddAcad);
 				
 				//Create Transfer Add panel
@@ -214,18 +214,19 @@ private JPanel createEditAcaPnl() {
 	String mLabelName[] = {"Enter Program Name:","Enter Degree Level:","Enter Graduation Term:","Enter Graduation Year:","Enter UW Email:",
 									"Enter External Email:", "Enter GPA:"};
 	mPnlAcademic = new JPanel();
-	mPnlAcademic.setLayout(new GridLayout(7,0));
+	mPnlAcademic.setLayout(new GridLayout(7,2));
 	for (int i = 0; i < mLabelName.length; i++) {
 		JPanel panel = new JPanel();
-		
+		System.out.println("here");
 		panel.setLayout(new GridLayout(1, 0));
 		txfLabel[i] = new JLabel(mLabelName[i]);
 		txfField[i] = new JTextField(25);
 		panel.add(txfLabel[i]);
 		panel.add(txfField[i]);
 		mPnlAcademic.add(panel);
-	}
 		
+	}
+		try{
 		txfField[0].setText(mStudent.getAcademicRecord().getProgram());
 		txfField[1].setText(mStudent.getAcademicRecord().getDegreeLevel());
 		txfField[2].setText(mStudent.getAcademicRecord().getGraduationTerm());
@@ -233,7 +234,10 @@ private JPanel createEditAcaPnl() {
 		txfField[4].setText(mStudent.getAcademicRecord().getUWEmail());
 		txfField[5].setText(mStudent.getAcademicRecord().getExternalEmail());
 		txfField[6].setText(Double.toString(mStudent.getAcademicRecord().getGPA()));
-		return null;
+		}catch(Exception j){
+			
+		}
+		return mPnlAcademic;
 	}
 
 
@@ -244,20 +248,47 @@ private JPanel createAcaPnl() {
 	mStudentCurrentAcademicPnl = new JPanel(new GridLayout(7,2));
 	
 	mAcaRecord[0] = new JLabel("Program: ");
-	mAcaRecord[1] = new JLabel(mStudent.getAcademicRecord().getProgram());
+	if(mStudent.getAcademicRecord().getProgram() != null){
+		mAcaRecord[1] = new JLabel(mStudent.getAcademicRecord().getProgram());
+	}else{
+		mAcaRecord[1] = new JLabel("na");
+	}
 	mAcaRecord[2] = new JLabel("Degree Level: ");
+	if(mStudent.getAcademicRecord().getDegreeLevel() != null){
 	mAcaRecord[3] = new JLabel(mStudent.getAcademicRecord().getDegreeLevel());
+	}else{
+		mAcaRecord[3] = new JLabel("na");
+	}
 	mAcaRecord[4] = new JLabel("Graduation Term: ");
+	if(mStudent.getAcademicRecord().getGraduationTerm() != null){
 	mAcaRecord[5] = new JLabel(mStudent.getAcademicRecord().getGraduationTerm());
+	}else{
+		mAcaRecord[5] = new JLabel("na");
+	}
 	mAcaRecord[6] = new JLabel("Graduation Year: ");
+	if(mStudent.getAcademicRecord().getGraduationYear() != null){
 	mAcaRecord[7] = new JLabel(mStudent.getAcademicRecord().getGraduationYear());
+	}else{
+		mAcaRecord[7] = new JLabel("na");
+	}
 	mAcaRecord[8] = new JLabel("UW Email: ");
+	if(mStudent.getAcademicRecord().getUWEmail()!= null){
 	mAcaRecord[9] = new JLabel(mStudent.getAcademicRecord().getUWEmail());
+	}else{
+		mAcaRecord[9] = new JLabel("na");
+	}
 	mAcaRecord[10] = new JLabel("External Email: ");
+	if(mStudent.getAcademicRecord().getExternalEmail()!= null){
 	mAcaRecord[11] = new JLabel(mStudent.getAcademicRecord().getExternalEmail());
+	}else{
+		mAcaRecord[11] = new JLabel("na");
+	}
 	mAcaRecord[12] = new JLabel("GPA: ");
+	if(Double.toString(mStudent.getAcademicRecord().getGPA()) != null){
 	mAcaRecord[13] = new JLabel(Double.toString(mStudent.getAcademicRecord().getGPA()));
-	
+	}else{
+		mAcaRecord[13] = new JLabel("0");
+	}
 	for(int j =0;j < mAcaRecord.length; j++){
 		mStudentCurrentAcademicPnl.add(mAcaRecord[j]);
 	}
