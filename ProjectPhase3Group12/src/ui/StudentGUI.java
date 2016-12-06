@@ -25,6 +25,7 @@ import javax.swing.table.TableModel;
 import employment.Employer;
 import employment.EmployerCollection;
 import student.Student;
+import student.StudentCollection;
 
 /**
  * @author Andrew,Brandon,Brian
@@ -35,12 +36,12 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 	
 	private static final long serialVersionUID = -8675309L;
 	
-	private ArrayList<Employer> myEmployers;
+	private ArrayList<Student> myStudentList;
 	private Student myStudent;
 	
 	private JButton myListButton, mySearchButton, myAddButton;
 	private JPanel buttonPanel, dataPanel;
-	private String[] emploerColumnNames = { "companyName", "startDate", "salary", "position"};
+	private String[] studentColumnNames = { "studentID", "firstName", "lastName"};
 
 	private Object[][] mData;
 	private JTable myTable;
@@ -50,10 +51,10 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 	private JTextField employerTextField;
 	private JButton employerSearchButton;
 
-	private JPanel addEmployerPanel;
-	private JLabel[] employerTextLabels = new JLabel[8];
-	private JTextField[] employerTextFields = new JTextField[8];
-	private JButton addEmployersButton;
+	private JPanel addStudentPanel;
+	private JLabel[] studentTextLabels = new JLabel[8];
+	private JTextField[] studentTextFields = new JTextField[8];
+	private JButton addStudentsButton;
 
 	/**
 	 * Use this for Item administration. Add components that contain the list,
@@ -61,7 +62,7 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 	 */
 	public StudentGUI (Student theStudent) {
 		myStudent = theStudent;
-		myEmployers = EmployerCollection.getEmployers(myStudent.getStudentID());
+		//myEmployers = EmployerCollection.getEmployers(myStudent.getStudentID());
 		
 		setLayout(new BorderLayout());
 
@@ -70,6 +71,26 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 		setSize(500, 500);
 	}
 
+	private ArrayList<Student> getStudentData(Student theStudent) {
+		try{
+			myStudentList = StudentCollection.getStudents();
+		}catch(Exception e){	
+		}
+		if(mTransferList != null){
+			mData = new Object[mTransferList.size()][mTransferStrings.length];
+			for(int i = 0; i< mTransferList.size(); i++){
+				mData[i][0] = mTransferList.get(i).getName();
+				//TODO Maybe pars gpa as string
+				mData[i][1] = Double.toString(mTransferList.get(i).getGPA());
+				mData[i][2] = mTransferList.get(i).getName();
+			}
+			
+			
+		}
+			
+		
+		return mTransferList;
+	}
 	/**
 	 * Create the three panels to add to this GUI. One for list, one for search,
 	 * one for add.
@@ -95,7 +116,7 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 
 		// List Panel
 		dataPanel = new JPanel();
-		myTable = new JTable(mData, emploerColumnNames);
+		myTable = new JTable(mData, studentColumnNames);
 		myScrollPane = new JScrollPane(myTable);
 		dataPanel.add(myScrollPane);
 		myTable.getModel().addTableModelListener(this);
@@ -111,29 +132,29 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 		searchPanel.add(employerSearchButton);
 
 		// Add Panel
-		addEmployerPanel = new JPanel();
-		addEmployerPanel.setLayout(new GridLayout(8, 0));
+		addStudentPanel = new JPanel();
+		addStudentPanel.setLayout(new GridLayout(8, 0));
 		
-		String labelNames[] = { "Company name:", "Start Date:", "Salary: ", "Position: "};
+		String labelNames[] = { "StudentId", "First Name", "Last Name"};
 		
 		for (int i = 0; i < labelNames.length; i++) {
 			JPanel panel = new JPanel();
 			panel.setLayout(new GridLayout(1, 0));
-			employerTextLabels[i] = new JLabel(labelNames[i]);
-			employerTextFields[i] = new JTextField(25);
-			panel.add(employerTextLabels[i]);
-			panel.add(employerTextFields[i]);
-			addEmployerPanel.add(panel);
+			studentTextLabels[i] = new JLabel(labelNames[i]);
+			studentTextFields[i] = new JTextField(25);
+			panel.add(studentTextLabels[i]);
+			panel.add(studentTextFields[i]);
+			addStudentPanel.add(panel);
 		}
 
 		JPanel panel = new JPanel();
 		
-		addEmployersButton = new JButton("Add");
-		addEmployersButton.addActionListener(this);
+		addStudentsButton = new JButton("Add");
+		addStudentsButton.addActionListener(this);
 		
-		panel.add(addEmployersButton);
+		panel.add(addStudentsButton);
 		
-		addEmployerPanel.add(panel);
+		addStudentPanel.add(panel);
 		add(dataPanel, BorderLayout.CENTER);
 
 	}
@@ -144,9 +165,9 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == myListButton) {
-			myEmployers = EmployerCollection.getEmployers();
+			
 			dataPanel.removeAll();
-			myTable = new JTable(mData, emploerColumnNames);
+			myTable = new JTable(mData, studentColumnNames);
 			myTable.getModel().addTableModelListener(this);
 			myScrollPane = new JScrollPane(myTable);
 			dataPanel.add(myScrollPane);
@@ -160,16 +181,16 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 			this.repaint();
 		} else if (e.getSource() == myAddButton) {
 			dataPanel.removeAll();
-			dataPanel.add(addEmployerPanel);
+			dataPanel.add(addStudentPanel);
 			dataPanel.revalidate();
 			this.repaint();
 
 		} else if (e.getSource() == employerSearchButton) {
 			String title = employerTextField.getText();
 			if (title.length() > 0) {
-				myEmployers = EmployerCollection.getEmployers();
+				//myEmployers = EmployerCollection.getEmployers();
 				dataPanel.removeAll();
-				myTable = new JTable(mData, emploerColumnNames);
+				myTable = new JTable(mData, studentColumnNames);
 				myTable.getModel().addTableModelListener(this);
 				myScrollPane = new JScrollPane(myTable);
 				dataPanel.add(myScrollPane);
@@ -177,7 +198,7 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 				this.repaint();
 				employerTextField.setText("");
 			}
-		} else if (e.getSource() == addEmployersButton) {
+		} else if (e.getSource() == addStudentsButton) {
 			performAddItem();
 		}
 
@@ -188,41 +209,41 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 	 */
 	private void performAddItem() {
 
-		String companyName = employerTextFields[0].getText();
+		String companyName = studentTextFields[0].getText();
 		
 		if (companyName.length() == 0) {
 			JOptionPane.showMessageDialog(null, "Enter a company name");
-			employerTextFields[0].setFocusable(true);
+			studentTextFields[0].setFocusable(true);
 			return;
 		}
 		
-		String startDate = employerTextFields[1].getText();
+		String startDate = studentTextFields[1].getText();
 		
 		if (startDate.length() == 0) {
 			JOptionPane.showMessageDialog(null, "Enter a start date for this employer");
-			employerTextFields[0].setFocusable(true);
+			studentTextFields[0].setFocusable(true);
 			return;
 		}
 		
-		String salary = employerTextFields[2].getText();
+		String salary = studentTextFields[2].getText();
 		if (salary.length() == 0) {
 			JOptionPane.showMessageDialog(null, "Enter a start date for this employer");
-			employerTextFields[0].setFocusable(true);
+			studentTextFields[0].setFocusable(true);
 			return;
 		}
 		double parsedSalary = Double.parseDouble(salary);
 		
-		String position = employerTextFields[3].getText();	
+		String position = studentTextFields[3].getText();	
 		
 		if (position.length() == 0) {
 			JOptionPane.showMessageDialog(null, "Enter a start date for this employer");
-			employerTextFields[0].setFocusable(true);
+			studentTextFields[0].setFocusable(true);
 			return;
 		}
 		
 		Employer tempEmployer = new Employer(companyName, startDate, parsedSalary, position);
 		
-		if (EmployerCollection.add(tempEmployer, myStudent.getStudentID())) {
+		if (EmployerCollection.add(tempEmployer, myStudentList.getStudentID())) {
 			JOptionPane.showMessageDialog(null, "Employer added");
 		} else {
 			JOptionPane.showMessageDialog(null, "Employer failed to add");
@@ -241,13 +262,13 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 		String columnName = tempModel.getColumnName(column);
 		Object data = tempModel.getValueAt(row, column);
 		
-		if (data != null && ((String) data).length() != 0) {
-			Employer tempEmployer = myEmployers.get(row);
-			if (!EmployerCollection.update(tempEmployer, columnName, data)) {
-				JOptionPane.showMessageDialog(null, "Update failed");
-			}
-		}
-
+//		if (data != null && ((String) data).length() != 0) {
+//			//Employer tempEmployer = myEmployers.get(row);
+//			//if (!EmployerCollection.update(tempEmployer, columnName, data)) {
+//				JOptionPane.showMessageDialog(null, "Update failed");
+//			}
+//		}
+//
 	}
 	
 	@Override
