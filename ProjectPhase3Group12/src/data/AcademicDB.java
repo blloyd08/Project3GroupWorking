@@ -396,7 +396,7 @@ public class AcademicDB {
 //		try {
 //			preparedStatement = mConnection.prepareStatement(sql);
 //			preparedStatement.setInt(1, Integer.parseInt(school.getID()));
-//			preparedStatement.executeUpdate();
+//			preparedStatement.execteUpdate();
 //		} catch (SQLException e) {
 //			e.printStackTrace();
 //			return "Error deleting transfer school: " + e.getMessage();
