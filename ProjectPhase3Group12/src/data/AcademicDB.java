@@ -374,34 +374,4 @@ public class AcademicDB {
 		return "Added Transfer School Successfully";
 	}
 	
-//	/**
-//	 * Deletes a transfer school within the TransferSchool table.
-//	 * 
-//	 * @param school transfer school to be deleted
-//	 * @return Returns "Deleted TransferSchool Successfully" or "Error deleteing transfer school: " with
-//	 *         the sql exception.
-//	 */
-//	public String deleteTransferSchool(TransferSchool school) {
-//		String sql = "DELETE FROM TransferSchool WHERE transferID = ?";
-//
-//		if (mConnection == null) {
-//			try {
-//				mConnection = DataConnection.getConnection();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//
-//		PreparedStatement preparedStatement = null;
-//		try {
-//			preparedStatement = mConnection.prepareStatement(sql);
-//			preparedStatement.setInt(1, Integer.parseInt(school.getID()));
-//			preparedStatement.execteUpdate();
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			return "Error deleting transfer school: " + e.getMessage();
-//		}
-//		return "Deleted Transfer School Successfully";
-//	}
-	
 }
