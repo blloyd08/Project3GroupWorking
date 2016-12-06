@@ -221,7 +221,6 @@ private JPanel createEditAcaPnl() {
 	mPnlAcademic.setLayout(new GridLayout(7,1));
 	for (int i = 0; i < mLabelName.length; i++) {
 		JPanel panel = new JPanel();
-		System.out.println("here");
 		panel.setLayout(new GridLayout(1, 0));
 		txfLabel[i] = new JLabel(mLabelName[i]);
 		txfField[i] = new JTextField(15);
