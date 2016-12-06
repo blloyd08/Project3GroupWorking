@@ -35,19 +35,22 @@ import student.Student;
 public class EmploymentGUI extends JPanel 
 implements ActionListener,TableModelListener {
 	
+	
 	private int empId = 0;
 	private static final long serialVersionUID = 644843L;
 	private JButton mBtnEmploymentList,mBtnAdd, mBtnAddSkills;
-	private List<Employer> mEmployerList;
-	private String mStudentID;
+	private ArrayList<Employer> mEmployerList;
+	private Student mStudent;
 
 	//variables for emp. table
 	private String[] mEmploymentColumnNames = {"name","salary","startDate","position"};
 	private JPanel mPnlList;
+	private JPanel mPnlBothList;
 	private JPanel mPnlButtons;
 	private Object[][] mData;
 	private JTable mTable;
 	private JScrollPane mScrollPane;
+	private JLabel mEmpArrayLbl,mSkillArrayLbl;
 	
 	//variables for skill table
 	private String[] mSkillColumnNames  = {"name","name"};
@@ -69,20 +72,23 @@ implements ActionListener,TableModelListener {
 	private JButton mBtnAddEmployment;
 
 
-	public EmploymentGUI(String theStudentID){
-		mStudentID = theStudentID;
+	public EmploymentGUI(Student theStudent){
+		mStudent = theStudent;
 		setLayout(new BorderLayout());
-		mEmployerList = getData(theStudentID); 
-		getTransferData();
+		mEmployerList = getData(mStudent); 
+		
+		getSkillData();
 		
 		createComponents();
+		
 		setVisible(true);
 		setSize(500, 500);
 	}
 
 
-	private void getTransferData() {
+	private void getSkillData() {
 		int i = 0;
+		mSkillData= new Object[25][2];
 		for(Employer emp: mEmployerList ){
 			
 			mSkillData[i][0] = emp.getCompanyName();
@@ -97,10 +103,13 @@ implements ActionListener,TableModelListener {
 	}
 
 
-	private List<Employer> getData(String studentID) {
-		mEmployerList = EmployerCollection.getEmployers(studentID);
-
+	private ArrayList<Employer> getData(Student theStudent) {
+		System.out.println("made it here1");
+		try{
+		mEmployerList = theStudent.getEmployers();
+		}catch(Exception e){}
 		if(mEmployerList != null){
+			
 			mData = new Object[mEmployerList.size()][mEmploymentColumnNames.length];
 			for (int i = 0; i < mEmployerList.size(); i++) {
 				mData[i][0] = mEmployerList.get(i).getCompanyName();
@@ -137,68 +146,88 @@ implements ActionListener,TableModelListener {
 
 		//main panel that list employers for a student
 		mPnlList = new JPanel();
-		mTable = new JTable(mData,mEmploymentColumnNames);
-		mScrollPane = new JScrollPane(mTable);
-		mPnlList.add(mScrollPane);
-		mTable.getModel().addTableModelListener(this);
 		
-
+		//create a panel for center of main panel
+		mPnlBothList = new JPanel(new GridLayout(2,0));
+		//mEmpArrayLbl = new JLabel("Employers:");
+		mTable = new JTable(mData,mEmploymentColumnNames);
+		
+		mScrollPane = new JScrollPane(mTable);
+	
+		//mPnlBothList.add(mEmpArrayLbl);
+		mPnlBothList.add(mScrollPane);
+		mTable.getModel().addTableModelListener(this);
+	
+		//mSkillArrayLbl = new JLabel("Skills:");
+		mSkillTable = new JTable(mSkillData,mSkillColumnNames);
+		mSkillScrollPane = new JScrollPane(mSkillTable);
+		//mPnlBothList.add(mSkillArrayLbl);
+		mPnlBothList.add(mSkillScrollPane);
+		
+		mPnlList.add(mPnlBothList);
+		System.out.println("after center panel");
 		//Add Panel- allows input to add a new employer
 		mPnlAdd = new JPanel();
-		mPnlAdd.setLayout(new GridLayout(4,0));
+		mPnlAdd.setLayout(new GridLayout(0,1));
 		String mLabelName[] = {"Enter Employer Name:","Enter Salary:","Enter Start Date:","Enter Position:"};
 
+		System.out.println("before for loop");
 		for (int i = 0; i < mLabelName.length; i++) {
 			JPanel panel = new JPanel();
+			;
 			if(mLabelName[i] == "Enter Start Date:"){
-			panel.setLayout(new GridLayout(0, 7));	
+			JPanel datePanel = new JPanel();
+			datePanel.setLayout(new GridLayout(1, 7));	
 			
 			txfLabel[i] = new JLabel(mLabelName[i]);
-			txfLabel[6] = new JLabel("Month(mm):");
-			txfField[6] = new JTextField(25);
-			txfLabel[7] = new JLabel("Day(dd):");
-			txfField[7] = new JTextField(25);
-			txfLabel[8] = new JLabel("Year(yyyy):");
-			txfField[8] = new JTextField(25);
+			txfLabel[6] = new JLabel("   Month(mm):");
+			txfField[6] = new JTextField(2);
+			txfLabel[7] = new JLabel("   Day(dd):");
+			txfField[7] = new JTextField(2);
+			txfLabel[8] = new JLabel("   Year(yyyy):");
+			txfField[8] = new JTextField(2);
 			
-			panel.add(txfLabel[i]);
-			panel.add(txfLabel[6]);
-			panel.add(txfField[6]);
-			panel.add(txfLabel[7]);
-			panel.add(txfField[7]);
-			panel.add(txfLabel[8]);
-			panel.add(txfField[8]);
-				
+			datePanel.add(txfLabel[i]);
+			datePanel.add(txfLabel[6]);
+			datePanel.add(txfField[6]);
+			datePanel.add(txfLabel[7]);
+			datePanel.add(txfField[7]);
+			datePanel.add(txfLabel[8]);
+			datePanel.add(txfField[8]);
+			
+			mPnlAdd.add(datePanel);
 			}else{
-			panel.setLayout(new GridLayout(1, 0));
+			panel.setLayout(new GridLayout(1, 1));
 			txfLabel[i] = new JLabel(mLabelName[i]);
 			txfField[i] = new JTextField(25);
 			panel.add(txfLabel[i]);
 			panel.add(txfField[i]);
-			}
 			mPnlAdd.add(panel);
+			}
+			
 			
 		}
 
+		System.out.println("before add to Jpanel");
 		JPanel mPanel = new JPanel();
 		mBtnAddEmployment = new JButton("Add");
 		mBtnAddEmployment.addActionListener(this);
 		mPanel.add(mBtnAddEmployment);
 		mPnlAdd.add(mPanel);
-		
+		System.out.println("after add to Jpanel");
 		add(mPnlList,BorderLayout.CENTER);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 	
+		
 		if(e.getSource() == mBtnEmploymentList){
-			mEmployerList = getData(mStudentID);
+			mEmployerList = getData(mStudent);
 			mPnlList.removeAll();
-			mTable = new JTable(mData,mEmploymentColumnNames);
-			mTable.getModel().addTableModelListener(this);
-			mScrollPane = new JScrollPane(mTable);
-			mPnlList.add(mScrollPane);
+			
+			mPnlList.add(mPnlBothList);
+			
 			mPnlList.revalidate();
 			this.repaint();
 			
@@ -270,8 +299,9 @@ implements ActionListener,TableModelListener {
 		Employer mEmp;
 		mEmp = new Employer(mEmpName, mDate, salary,mPosition);
 		
+		
 		String message = "Employer add failed";
-		if (EmployerCollection.add(mEmp)) {
+		if (mStudent.addEmployer(mEmp)) {
 			message = "Item added";
 		}
 		JOptionPane.showMessageDialog(null, message);
@@ -295,10 +325,25 @@ implements ActionListener,TableModelListener {
 		String columnName = model.getColumnName(column);
 		Object data = model.getValueAt(row, column);
 		if (data != null && ((String) data).length() != 0) {
+			
+			try{
 			Employer item = mEmployerList.get(row);
-			if (!EmployerCollection.update(item, columnName, data)) {
+			if (columnName == "name") {
+				mStudent.getEmployer(item.getID()).setCompanyName((String)data);
+			}
+			if (columnName == "salary") {
+				mStudent.getEmployer(item.getID()).setSalary((Double.parseDouble((String)data)));
+			}
+			if (columnName == "startDate") {
+				mStudent.getEmployer(item.getID()).setStartDate((String)data);
+			}
+			if (columnName == "position") {
+				mStudent.getEmployer(item.getID()).setPosition((String)data);
+			}
+			}catch(Exception e4){
 				JOptionPane.showMessageDialog(null, "Update failed");
 			}
+			
 		}
 
 	}
