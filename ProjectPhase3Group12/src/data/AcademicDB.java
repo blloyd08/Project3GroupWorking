@@ -381,7 +381,7 @@ public class AcademicDB {
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return "Error adding transfer school: " + e.getMessage();
+			return "Error adding academic record: " + e.getMessage();
 		}
 		return "Added Transfer School Successfully";
 	}

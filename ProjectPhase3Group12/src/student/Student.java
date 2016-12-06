@@ -4,11 +4,13 @@
 package student;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Observable;
+import java.util.Observer;
 
+import academic.AcademicCollection;
 import academic.AcademicRecord;
 import employment.Employer;
+import employment.EmployerCollection;
 
 /**
  * @author Andrew,Brandon,Brian
@@ -16,6 +18,12 @@ import employment.Employer;
  */
 public class Student extends Observable {
 
+
+	public static final String FIRST_NAME = "FIRST_NAME";
+	public static final String LAST_NAME = "LAST_NAME";
+	public static final String ACADEMIC_RECORD = "ACADEMIC_RECORD";
+	public static final String EMPLOYERS = "EMPLOYERS";
+	
 	private String myID;
 	private String myFirstName;
 	private String myLastName;
@@ -65,6 +73,9 @@ public class Student extends Observable {
 			myAcademicRecord = new AcademicRecord(theRecord.getStudentID(), theRecord.getProgram(), theRecord.getDegreeLevel(),
 					theRecord.getGraduationTerm(), theRecord.getGraduationYear(), theRecord.getUWEmail(), 
 						theRecord.getExternalEmail(), theRecord.getGPA());
+			AcademicCollection.add(myAcademicRecord);
+			hasChanged();
+			notifyObservers(ACADEMIC_RECORD);
 				
 				flag = true;
 			} catch(Exception e) {
@@ -81,6 +92,9 @@ public class Student extends Observable {
 		
 		try {
 			myEmployers.add(theEmployer);
+			EmployerCollection.add(theEmployer, this.myAcademicRecord.getStudentID());
+			hasChanged();
+			notifyObservers(EMPLOYERS);
 			flag = true;
 			
 		} catch(Exception e) {
@@ -97,14 +111,20 @@ public class Student extends Observable {
 	
 	public void setFirstName(String theFirstName) {
 		this.myFirstName = theFirstName;
+		StudentCollection.update(this, "firstName", myFirstName);
+		hasChanged();
+		notifyObservers(FIRST_NAME);
 	}
 	
 	public String getLastName() {
 		return myLastName;
 	}
 	
-	public void setLastName(String theFirstName) {
-		this.myLastName = theFirstName;
+	public void setLastName(String theLastName) {
+		this.myLastName = theLastName;
+		StudentCollection.update(this, "lastName", myLastName);
+		hasChanged();
+		notifyObservers(LAST_NAME);
 	}
 	
 	public AcademicRecord getAcademicRecord() {
@@ -113,6 +133,9 @@ public class Student extends Observable {
 	
 	public void setAcademicRecord(AcademicRecord theAcademicRecord) {
 		this.myAcademicRecord = theAcademicRecord;
+		AcademicCollection.add(myAcademicRecord);
+		hasChanged();
+		notifyObservers(ACADEMIC_RECORD);
 	}
 	
 	public ArrayList<Employer> getEmployers() {
@@ -138,11 +161,20 @@ public class Student extends Observable {
 	
 	public void setEmployers(ArrayList<Employer> theEmployers) {
 		myEmployers = theEmployers;
+		
+		for(Employer e : myEmployers) {
+			EmployerCollection.add(e, this.myAcademicRecord.getStudentID());
+			hasChanged();
+			notifyObservers(EMPLOYERS);
+		}
 	}
 	
 	public void setEmployers(Employer theEmployer) {
 		myEmployers = new ArrayList<Employer>();
 		myEmployers.add(theEmployer);
+		EmployerCollection.add(theEmployer, this.myAcademicRecord.getStudentID());
+		hasChanged();
+		notifyObservers(EMPLOYERS);
 	}
 
 	public String getID() {
@@ -153,5 +185,8 @@ public class Student extends Observable {
 		this.myID = theID;
 	}
 
+	public void addToObservers(Observer theObserver) {
+		addObserver(theObserver);
+	}
 	
 }

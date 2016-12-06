@@ -32,13 +32,13 @@ public class EmployerCollection {
 
 		String message = mEmployerDB.addEmployer(employer, studentID);
 
-		if (message.startsWith("Error adding employer:")) {
+		if (message.startsWith("Error adding employer: ")) {
 			return false;
 		}
 
 		// Add employer skills
 		List<String> skills = employer.getSkills();
-		if (skills != null || skills.size() > 0) {
+		if (skills != null && skills.size() > 0) {
 			for (String skill : skills) {
 				if (!EmployerCollection.add(employer.getID(), skill)) {
 					return false;
@@ -84,6 +84,12 @@ public class EmployerCollection {
 		if (mEmployerDB == null) {
 			mEmployerDB = new EmployerDB();
 		}
+		
+		if (employer.getID() == null){
+			System.err.println("Employer ID is null");
+			return false;
+		}
+		
 		String message = mEmployerDB.updateEmployer(employer, column, data);
 		if (message.startsWith("Error updating employer: ")) {
 			return false;

@@ -45,7 +45,7 @@ public class AcademicCollection {
 		}
 
 		String message = mAcademicDB.addTransferSchool(school);
-		if (message.startsWith("Error adding academic record:")) {
+		if (message.startsWith("Error adding academic record: ")) {
 			return false;
 		}
 		return true;
