@@ -9,6 +9,7 @@ package ui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -16,6 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import academic.AcademicRecord;
+import academic.TransferSchool;
 import employment.Employer;
 import student.Student;
 
@@ -37,6 +40,8 @@ public class MainGUI extends JFrame implements PropertyChangeListener {
 		mStudent = new Student("andrew", "klonitsko");
 		mStudent.addEmployer(new Employer("THIS", "HERE"));
 		mStudent.addEmployer(new Employer("Now", "HERE"));
+		mStudent.addAcademicRecord(new AcademicRecord("Hello1", "Hello2", "Hello3", "Hello4", "Hello5", "Hello6", "Hello7", "hello1", 3.2, new ArrayList<TransferSchool>()));
+		
 		// Display User selector GUI and listen to user selection
 		userSelector.addPropertyChangeListener(frame);
 		userSelector.setVisible(true);
@@ -88,6 +93,8 @@ public class MainGUI extends JFrame implements PropertyChangeListener {
 		this.add(myTabbedPane);
 		this.setVisible(true);
 	}
+	
+	//Something
 
 	private JComponent makeTextPanel(String type) {
 
@@ -96,9 +103,13 @@ public class MainGUI extends JFrame implements PropertyChangeListener {
 			panel.add(new EmploymentGUI(mStudent));
 			System.out.println("after panel add");
 		} 
-		if(type.equalsIgnoreCase("Student")) {
-			panel.add(new StudentGUI(mStudent));
-		} else {
+		else if(type.equalsIgnoreCase("Student")) {
+			panel.add(new StudentGUI());
+		} 
+		else if(type.equalsIgnoreCase("Academic")) {
+			panel.add(new AcademicGUI(mStudent));
+		}
+		else {
 			panel.add(new JLabel("Needs to be implemented!"));
 		}
 		

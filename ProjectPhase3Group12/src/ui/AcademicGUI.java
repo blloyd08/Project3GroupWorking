@@ -50,6 +50,8 @@ implements ActionListener,TableModelListener, Observer {
 	private JTable mTable;
 	private JScrollPane mScrollPane;
 	private JLabel mLblAcademic,mLblTransfer;
+	private JPanel mPnlTaband;
+	
 	
 	//variables for academic record
 	private JPanel mStudentCurrentAcademicPnl;
@@ -74,6 +76,12 @@ implements ActionListener,TableModelListener, Observer {
 	private JButton mBtnAddtransfer;
 	
 	
+	/**
+	 * Contruct to create a new panel for the user
+	 * 
+	 * @param Studet
+	 *            the student.
+	 */
 	public AcademicGUI(Student theStudent){
 		mStudent = theStudent;
 		setLayout(new BorderLayout());
@@ -88,7 +96,12 @@ implements ActionListener,TableModelListener, Observer {
 	
 	
 
-
+	/**
+	 * Gets all of the students transfer schools
+	 * 
+	 * @param Studet
+	 * @return List<TransferSchool>    
+	 */
 	private List<TransferSchool> getTransData(Student theStudent) {
 		try{
 			mTransferList = theStudent.getAcademicRecord().getTransferSchools();
@@ -112,28 +125,11 @@ implements ActionListener,TableModelListener, Observer {
 
 
 
-	//TODO Delete
-	private List<AcademicRecord> getAcadData(String theStudentID) {
-		//mAcademicList = AcademicCollection.getAcademicRecord(theStudentID);
-
-		if(mAcademicList != null){
-			mData = new Object[mAcademicList.size()][mAcademicStrings.length];
-			for (int i = 0; i < mAcademicList.size(); i++) {
-				mData[i][0] = mAcademicList.get(i).getProgram();
-				mData[i][1] = mAcademicList.get(i).getDegreeLevel();
-				mData[i][2] = mAcademicList.get(i).getGraduationTerm();
-				mData[i][3] = mAcademicList.get(i).getGraduationYear();
-				mData[i][4] = mAcademicList.get(i).getUWEmail();
-				mData[i][5] = mAcademicList.get(i).getExternalEmail();
-				mData[i][6] = Double.toString(mAcademicList.get(i).getGPA());
-		
-			}
-		}
-
-
-		return mAcademicList;
-	}
-
+	/**
+	 * Creates JPanel components for add academic, add transfer school
+	 * 
+	 *    
+	 */
 	private void createComponents() {
 		// The Top Most Panel That Allows Adding Employer and Listing Employer
 				mPnlButtons = new JPanel();
@@ -155,6 +151,7 @@ implements ActionListener,TableModelListener, Observer {
 
 				//main panel that list academic and transferSchools for a student
 				mPnlList = new JPanel();
+				
 				mStudentCurrentAcademicPnl=createAcaPnl();
 				
 				
@@ -166,32 +163,33 @@ implements ActionListener,TableModelListener, Observer {
 				
 				
 				mPnlList.add(mStudentCurrentAcademicPnl);
-				mPnlList.add(mTable);
+				mPnlList.add(mScrollPane);
 				
 				mTable.getModel().addTableModelListener(this);
 				
 
 				//Add Panel- allows User to add/edit academic and tra
-				mPnlAdd = new JPanel();
-				
-			
-				mPnlAcademic = createEditAcaPnl();
+				mPnlAdd = new JPanel(new GridLayout(7,1));
 				
 				
+				//mPnlAcademic = createEditAcaPnl();
 				
-				mBtnAddAcad = new JButton("Add/Edit Academic Info:");
+				
+				
+				mBtnAddAcad = new JButton("Add/Edit Academic Info");
 				mBtnAddAcad.addActionListener(this);
-				mPnlAdd.add(mPnlAcademic);
+				mPnlAdd.add(createEditAcaPnl());
 				mPnlAdd.add(mBtnAddAcad);
 				
 				//Create Transfer Add panel
-				mPnlAddtrans = new JPanel();
+				String[] mTransferLblString = {"Enter Name: ","Enter GPA: ","Enter Degree Earned: "};
+				mPnlAddtrans = new JPanel(new GridLayout(4,1));
 				
 				for (int i = 0; i < mTransferStrings.length; i++) {
 					JPanel panel = new JPanel();
 					
 					panel.setLayout(new GridLayout(1, 0));
-					txfLabeltrans[i] = new JLabel(mTransferStrings[i]);
+					txfLabeltrans[i] = new JLabel(mTransferLblString[i]);
 					txfFieldtrans[i] = new JTextField(10);
 					panel.add(txfLabeltrans[i]);
 					panel.add(txfFieldtrans[i]);
@@ -208,24 +206,30 @@ implements ActionListener,TableModelListener, Observer {
 			}
 		
 
-private JPanel createEditAcaPnl() {
+	/**
+	 * Gets all creates a JPanels for the Academic Button
+	 * 
+	 * 
+	 * @return JPanel    
+	 */
+	private JPanel createEditAcaPnl() {
 	
 	
 	String mLabelName[] = {"Enter Program Name:","Enter Degree Level:","Enter Graduation Term:","Enter Graduation Year:","Enter UW Email:",
 									"Enter External Email:", "Enter GPA:"};
 	mPnlAcademic = new JPanel();
-	mPnlAcademic.setLayout(new GridLayout(7,0));
+	mPnlAcademic.setLayout(new GridLayout(7,1));
 	for (int i = 0; i < mLabelName.length; i++) {
 		JPanel panel = new JPanel();
-		
 		panel.setLayout(new GridLayout(1, 0));
 		txfLabel[i] = new JLabel(mLabelName[i]);
-		txfField[i] = new JTextField(25);
+		txfField[i] = new JTextField(15);
 		panel.add(txfLabel[i]);
 		panel.add(txfField[i]);
 		mPnlAcademic.add(panel);
-	}
 		
+	}
+		try{
 		txfField[0].setText(mStudent.getAcademicRecord().getProgram());
 		txfField[1].setText(mStudent.getAcademicRecord().getDegreeLevel());
 		txfField[2].setText(mStudent.getAcademicRecord().getGraduationTerm());
@@ -233,31 +237,65 @@ private JPanel createEditAcaPnl() {
 		txfField[4].setText(mStudent.getAcademicRecord().getUWEmail());
 		txfField[5].setText(mStudent.getAcademicRecord().getExternalEmail());
 		txfField[6].setText(Double.toString(mStudent.getAcademicRecord().getGPA()));
-		return null;
+		}catch(Exception j){
+			
+		}
+		return mPnlAcademic;
 	}
 
 
 
-
-
+	/**
+	 * Gets all creates a JPanels for Add Academic
+	 * 
+	 * 
+	 * @return JPanel    
+	 */
 private JPanel createAcaPnl() {
 	mStudentCurrentAcademicPnl = new JPanel(new GridLayout(7,2));
 	
 	mAcaRecord[0] = new JLabel("Program: ");
-	mAcaRecord[1] = new JLabel(mStudent.getAcademicRecord().getProgram());
+	if(mStudent.getAcademicRecord().getProgram() != null){
+		mAcaRecord[1] = new JLabel(mStudent.getAcademicRecord().getProgram());
+	}else{
+		mAcaRecord[1] = new JLabel("na");
+	}
 	mAcaRecord[2] = new JLabel("Degree Level: ");
+	if(mStudent.getAcademicRecord().getDegreeLevel() != null){
 	mAcaRecord[3] = new JLabel(mStudent.getAcademicRecord().getDegreeLevel());
+	}else{
+		mAcaRecord[3] = new JLabel("na");
+	}
 	mAcaRecord[4] = new JLabel("Graduation Term: ");
+	if(mStudent.getAcademicRecord().getGraduationTerm() != null){
 	mAcaRecord[5] = new JLabel(mStudent.getAcademicRecord().getGraduationTerm());
+	}else{
+		mAcaRecord[5] = new JLabel("na");
+	}
 	mAcaRecord[6] = new JLabel("Graduation Year: ");
+	if(mStudent.getAcademicRecord().getGraduationYear() != null){
 	mAcaRecord[7] = new JLabel(mStudent.getAcademicRecord().getGraduationYear());
+	}else{
+		mAcaRecord[7] = new JLabel("na");
+	}
 	mAcaRecord[8] = new JLabel("UW Email: ");
+	if(mStudent.getAcademicRecord().getUWEmail()!= null){
 	mAcaRecord[9] = new JLabel(mStudent.getAcademicRecord().getUWEmail());
+	}else{
+		mAcaRecord[9] = new JLabel("na");
+	}
 	mAcaRecord[10] = new JLabel("External Email: ");
+	if(mStudent.getAcademicRecord().getExternalEmail()!= null){
 	mAcaRecord[11] = new JLabel(mStudent.getAcademicRecord().getExternalEmail());
+	}else{
+		mAcaRecord[11] = new JLabel("na");
+	}
 	mAcaRecord[12] = new JLabel("GPA: ");
+	if(Double.toString(mStudent.getAcademicRecord().getGPA()) != null){
 	mAcaRecord[13] = new JLabel(Double.toString(mStudent.getAcademicRecord().getGPA()));
-	
+	}else{
+		mAcaRecord[13] = new JLabel("0");
+	}
 	for(int j =0;j < mAcaRecord.length; j++){
 		mStudentCurrentAcademicPnl.add(mAcaRecord[j]);
 	}
@@ -269,13 +307,14 @@ private JPanel createAcaPnl() {
 
 
 
-	
+	//USE LATER
 	@Override
 	public void tableChanged(TableModelEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	//When a button is clicked
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == mBtnAcademicList){
@@ -324,7 +363,7 @@ private JPanel createAcaPnl() {
 
 
 
-
+// add Transfer to academic record
 	private void performAddTransfer() {
 		String mprogram = txfFieldtrans[0].getText();
 		if (mprogram.length() == 0) {
@@ -362,12 +401,44 @@ private JPanel createAcaPnl() {
 		}
 		JOptionPane.showMessageDialog(null, message);
 		
+		String mprogramt = txfFieldtrans[0].getText();
+		if (mprogramt.length() == 0) {
+			JOptionPane.showMessageDialog(null, "Enter a school name");
+			txfFieldtrans[0].setFocusable(true);
+			return;
+		}
+		String mGPAt = txfFieldtrans[1].getText();
+		double mGPADOt = 0.0;
+		if (mGPAt.length() != 0) {
+			try {
+				mGPADOt = Double.parseDouble(mGPAt);
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(null, "Enter GPA as decimal");
+				txfFieldtrans[1].setText("");
+				txfFieldtrans[1].setFocusable(true);
+				return;
+			}
+		}
+		String mDegreeLvlt = txfFieldtrans[2].getText();
+		if (mDegreeLvlt.length() == 0) {
+			JOptionPane.showMessageDialog(null, "Enter a Degree Level");
+			txfFieldtrans[2].setFocusable(true);
+			return;
+		}
+		
+		//Adding To the collection
+		AcademicRecord mACt = mStudent.getAcademicRecord();
+		TransferSchool mTFt = new TransferSchool("0",mACt.getID(),mprogramt,mGPADOt,mDegreeLvlt);
+		mAC.addTransferSchool(mTF);
+		
+		String messaget = "Transfer School add failed";
+		if (mStudent.addAcademicRecord(mAC)) {
+			messaget = "School added";
+		}
+		JOptionPane.showMessageDialog(null, messaget);
 		
 		
 	}
-
-
-
 
 
 	private void performAddAcad() {
@@ -430,16 +501,14 @@ private JPanel createAcaPnl() {
 			return;
 		}
 		
-		//Adding To the collection
-		//Is this what you wanted here Andrew?
 		AcademicRecord mAC;
 		mAC = new AcademicRecord(mStudent.getStudentID(), mprogram, mDegreeLvl, 
 				mGradTerm, mGradYear, muwEmail, mexEmail, mGPADO, null);
 		
 		
-		String message = "Employer add failed";
+		String message = "Academic Record add failed";
 		if (mStudent.addAcademicRecord(mAC)) {
-			message = "Item added";
+			message = "Academic Record Added";
 		}
 		JOptionPane.showMessageDialog(null, message);
 

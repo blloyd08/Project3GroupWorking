@@ -398,7 +398,6 @@ implements ActionListener,TableModelListener {
 		TableModel model = (TableModel) e.getSource();
 		String columnName = model.getColumnName(column);
 		Object data = model.getValueAt(row, column);
-		System.out.println(mEmployerList.get(row).getCompanyName());
 		if (data != null && ((String) data).length() != 0) {
 			
 			try{
