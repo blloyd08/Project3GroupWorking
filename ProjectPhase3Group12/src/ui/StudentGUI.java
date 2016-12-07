@@ -37,6 +37,7 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 	private static final long serialVersionUID = -8675309L;
 	
 	private ArrayList<Student> myStudentList;
+	private Student studentToReturn;
 	//private Student myStudent;
 	
 	private JButton myListButton, mySearchButton, myAddButton;
@@ -80,7 +81,7 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 			myData = new Object[myStudentList.size()][studentColumnNames.length];
 			for(int i = 0; i< myStudentList.size(); i++) {
 				Student tempStudent = myStudentList.get(i);
-				myData[i][0] = tempStudent.getStudentID();
+				myData[i][0] = tempStudent.getID();
 				//TODO Maybe pars gpa as string
 				myData[i][1] = tempStudent.getFirstName();
 				myData[i][2] = tempStudent.getLastName();
@@ -232,6 +233,14 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 			studentTextFields[0].setFocusable(true);
 			return;
 		}
+		Student temmpStudent;
+		temmpStudent = new Student(firstNameTemp, lstNameTemp);
+		String message = "Student add failed";
+		if (StudentCollection.add(temmpStudent)) {
+			message = "Student added";
+		}
+		JOptionPane.showMessageDialog(null, message);
+		
 	}
 	
 	/**
@@ -248,8 +257,12 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 		String columnName = tempModel.getColumnName(column);
 		Object data = tempModel.getValueAt(row, column);
 		
+		
+		
 		if (data != null && ((String) data).length() != 0) {
 			Student tempStudent = myStudentList.get(row);
+			studentToReturn = myStudentList.get(row);
+			System.out.println(tempStudent.getID());
 			if (!StudentCollection.update(tempStudent, columnName, (String)data)) {
 				JOptionPane.showMessageDialog(null, "Update failed");
 			}
@@ -257,6 +270,10 @@ public class StudentGUI extends JPanel implements Observer, ActionListener, Tabl
 
 	}
 	
+	public Student getCurrentStudent(){
+		
+		return studentToReturn;
+	}
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
